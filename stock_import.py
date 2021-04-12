@@ -8,10 +8,8 @@ import pandas as pd
 src = './allstock'
 titles = ['symbol', 'date', 'open', 'high', 'low', 'close',
           'pre_close', 'change', 'change_rate', 'turnover', 'volume']
-number_fields= set('')
 
 client = pymongo.MongoClient(host='mongodb://rock.chao.com', username='chao', password='mongo2020')
-# client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
 db = client["stock"]
 collection = db["price"]
 
@@ -19,16 +17,13 @@ confirm = input("Delete databse y/n? \n")
 if(confirm == 'y'):
     collection.delete_many({})
 
-files = os.listdir(src)
 total = 0
 all_start=time.time()
+files = os.listdir(src)
 for i, f in enumerate(files):
-    # if(i > 1):
-    #     exit()
     cnt = 0
     start=time.time()
     for line in open(os.path.join(src, f), encoding='utf-8'):
-        # print(line)
         if(cnt==0):
             cnt += 1
             continue
@@ -39,7 +34,8 @@ for i, f in enumerate(files):
             if(title=='symbol'):
                 content=values[j]
             elif(title=='date'):
-                content=values[j]
+                day=datetime.datetime.strptime(values[j], '%Y%m%d').date()
+                content=str(day)
             #     content=datetime.datetime(int(values[j][0:4]),int(values[j][4:6]),int(values[j][6:8]))
             else:
                 content=float(values[j])
