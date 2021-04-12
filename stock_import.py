@@ -47,7 +47,7 @@ for i, f in enumerate(files):
         collection.insert_one(item)
         cnt += 1
         total += 1
-        if(total % 100 == 0):
+        if(total % 1000 == 0):
             print(i, f, cnt,"speed:",int(cnt/(time.time()-start)))
     print(total)
     print('Time used:',time.time()-all_start)
