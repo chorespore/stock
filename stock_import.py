@@ -15,7 +15,7 @@ client = pymongo.MongoClient(
 db = client["stock"]
 collection = db["price"]
 
-confirm = input("Delete databse y/n? \n")
+confirm = input("Delete database y/n ? \n")
 if(confirm == 'y'):
     collection.delete_many({})
 
@@ -29,6 +29,7 @@ for f in files:
 print(N, 'lines to insert')
 
 for i, f in enumerate(files):
+    print(i, f, end=' ')
     cnt = 0
     start = time.time()
     for line in open(os.path.join(src, f), encoding='utf-8'):
@@ -51,9 +52,13 @@ for i, f in enumerate(files):
         collection.insert_one(item)
         cnt += 1
         total += 1
-        if(total % 1000 == 0):
-            print(i, f, cnt, "speed:", int(cnt/(time.time()-start)))
-    print(str(total) + '/' + str(N), str(format(total/N, '.3f'))+'%')
-    print('Time used:', str(int(time.time()-all_start)) + 's')
+        if(total % 100 == 0):
+            print('|', end='', flush=True)
+    print(" Speed:", int(cnt/(time.time()-start)), end='')
+    timeUsed = int(time.time()-all_start)
+    print('  Progress:', str(total) + '/' + str(N),str(format(total/N*100, '.3f'))+'%')
+    print('Time used:', str(timeUsed) + 's', end='  ')
+    print('Time estimated:', str(format(timeUsed*N/total/3600, '.2f'))+'h', end='  ')
+    print('Time remaining:', str(format((timeUsed*N/total-timeUsed)/3600, '.2f'))+'h')
 
 print('Total size: ', collection.count_documents({}))
