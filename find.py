@@ -5,18 +5,36 @@ client = pymongo.MongoClient(host='mongodb://rock.chao.com', username='chao', pa
 db = client["stock"]
 collection = db["price"]
 
-query = { "date":"2020-07-24","change_rate": { "$gt": 9.9} }
+start="2019-07-24"
+period=100
+end="2020-07-24"
+profit=0.0
+
+query = { "date":"2020-07-24","change_rate": { "$gt": 10} }
 display={"symbol":1,"date":1,"change_rate":1}
 
-res = collection.find(query,display).skip(0).limit(1)
-for x in res:
-  print(x)
+# res = collection.find(query,display).skip(0).limit(5).sort('change_rate',1)
+# for x in res:
+#   print(x)
+
+def pick(date):
+  query = { "date":date,"change_rate": { "$gt": 10} }
+  res = collection.find(query).skip(0).limit(5).sort('change_rate',1)
+  return res[0]
+
+def calc():
+  for i in range(period):
+    today=getDay(start,i)
+
 
 def getDay(current,offset): 
     today=datetime.datetime.strptime(current, '%Y-%m-%d').date()
-    oneday=datetime.timedelta(days=offset)
-    yesterday=today+oneday  
-    return yesterday
+    span=datetime.timedelta(days=offset)
+    res=str(today+span)  
+    return res
  
-y=getDay('2020-08-07',-20)
-print('str',str(y))
+a=pick('2020-08-07')
+print(a)
+print(a['symbol'])
+# y=getDay('2020-08-07',-20)
+# print('str',str(y))
