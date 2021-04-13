@@ -4,9 +4,9 @@ import numpy as np
 from matplotlib import pyplot as plt  
 # pip3 install matplotlib
 
-start="2018-01-24"
+start="2017-01-24"
 end="2020-07-24"
-PERIOD=500
+PERIOD=250
 
 principal=100.0
 profit=0.0
@@ -14,7 +14,7 @@ profit=0.0
 x = np.arange(0,PERIOD) 
 y=[]
 
-client = pymongo.MongoClient(host='mongodb://rock.chao.com', username='chao', password='mongo2020')
+client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
 db = client["stock"]
 collection = db["price"]
 
