@@ -9,13 +9,9 @@ src = './allstock'
 titles = ['symbol', 'date', 'open', 'high', 'low', 'close',
           'pre_close', 'change', 'change_rate', 'turnover', 'volume']
 
-# client = pymongo.MongoClient(host='mongodb://rock.chao.com', username='chao', password='mongo2020')
-client = pymongo.MongoClient(
-    host='mongodb://localhost', username='chao', password='mongo2020')
+client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
 db = client["stock"]
 collection = db["price"]
-
-
 
 def importData():
     confirm = input("Delete database y/n ? \n")
@@ -71,4 +67,5 @@ def createIndex():
         print('Creating index of',idx)
         collection.create_index([(idx,1)])
 
+# importData()
 createIndex()
