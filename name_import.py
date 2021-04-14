@@ -16,34 +16,35 @@ client = pymongo.MongoClient(host='mongodb://localhost', username='chao', passwo
 db = client["stock"]
 nameColl = db["name"]
 
+
 def importData():
-    doc=[]
+    doc = []
     nameColl.drop()
     for i in data:
         item = {}
-        item['symbol']=i['symbol']
-        item['name']=i['name']
+        item['symbol'] = i['symbol']
+        item['name'] = i['name']
         doc.append(item)
     nameColl.insert_many(doc)
     print(nameColl.count_documents({}), 'items saved to mongo')
-    
-    indexes=['symbol']
+
+    indexes = ['symbol']
     for idx in indexes:
-        print('Creating index of',idx)
-        nameColl.create_index([(idx,1)])
+        print('Creating index of', idx)
+        nameColl.create_index([(idx, 1)])
+
 
 def updataSymbol():
-    symbolSet=set()
-    res=nameColl.find()
+    symbolSet = set()
+    res = nameColl.find()
     for i in res:
-        s=i['symbol']
+        s = i['symbol']
         if(s not in symbolSet):
             symbolSet.add(s)
-            parts=s.split('.')
-            print(s,parts[1]+parts[0])
-            nameColl.update_many({'symbol':s},{"$set":{"symbol":parts[1]+parts[0]}})
+            parts = s.split('.')
+            print(s, parts[1]+parts[0])
+            nameColl.update_many({'symbol': s}, {"$set": {"symbol": parts[1]+parts[0]}})
     print(len(symbolSet))
-    
 
 
 def fetch(page):
@@ -78,7 +79,6 @@ def saveCSV(data):
     print(len(data), 'items saved to CSV')
 
 
-# 调用函数，并保存到本地
 if __name__ == '__main__':
     # fetch(PAGE)
     # saveJson(data)

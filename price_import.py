@@ -13,6 +13,7 @@ client = pymongo.MongoClient(host='mongodb://localhost', username='chao', passwo
 db = client["stock"]
 priceColl = db["price"]
 
+
 def importData():
     confirm = input("Delete database y/n ? \n")
     if(confirm == 'y'):
@@ -42,7 +43,8 @@ def importData():
                 if(title == 'symbol'):
                     content = values[j]
                 elif(title == 'date'):
-                    day = datetime.datetime.strptime(values[j], '%Y%m%d').date()
+                    day = datetime.datetime.strptime(
+                        values[j], '%Y%m%d').date()
                     content = str(day)
                 #     content=datetime.datetime(int(values[j][0:4]),int(values[j][4:6]),int(values[j][6:8]))
                 else:
@@ -53,31 +55,34 @@ def importData():
             total += 1
             if(total % 100 == 0):
                 print('|', end='', flush=True)
-        print(" Speed:", int(cnt/(time.time()-start)), end='')
         timeUsed = int(time.time()-all_start)
+        print(" Speed:", int(cnt/(time.time()-start)), end='')
         print('  Progress:', str(total) + '/' + str(N),str(format(total/N*100, '.3f'))+'%')
         print('Time used:', str(timeUsed) + 's', end='  ')
         print('Time estimated:', str(format(timeUsed*N/total/3600, '.2f'))+'h', end='  ')
         print('Time remaining:', str(format((timeUsed*N/total-timeUsed)/3600, '.2f'))+'h')
     print('Total size: ', priceColl.count_documents({}))
 
+
 def createIndex():
-    indexes=['symbol','date','change_rate']
+    indexes = ['symbol', 'date', 'change_rate']
     for idx in indexes:
-        print('Creating index of',idx)
-        priceColl.create_index([(idx,1)])
+        print('Creating index of', idx)
+        priceColl.create_index([(idx, 1)])
+
 
 def updateSymbol():
-    symbolSet=set()
-    res=priceColl.find()
+    symbolSet = set()
+    res = priceColl.find()
     for i in res:
-        s=i['symbol']
+        s = i['symbol']
         if(s not in symbolSet and '.' in s):
             symbolSet.add(s)
-            parts=s.split('.')
-            print(s,parts[1]+parts[0])
-            priceColl.update_many({'symbol':s},{"$set":{"symbol":parts[1]+parts[0]}})
+            parts = s.split('.')
+            print(s, parts[1]+parts[0])
+            priceColl.update_many({'symbol': s}, {"$set": {"symbol": parts[1]+parts[0]}})
     print(len(symbolSet))
+
 
 # importData()
 # createIndex()
