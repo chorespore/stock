@@ -11,12 +11,12 @@ titles = ['symbol', 'date', 'open', 'high', 'low', 'close',
 
 client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
 db = client["stock"]
-collection = db["price"]
+priceColl = db["price"]
 
 def importData():
     confirm = input("Delete database y/n ? \n")
     if(confirm == 'y'):
-        collection.drop()
+        priceColl.drop()
 
     total = 0
     all_start = time.time()
@@ -48,7 +48,7 @@ def importData():
                 else:
                     content = float(values[j])
                 item[title] = content
-            collection.insert_one(item)
+            priceColl.insert_one(item)
             cnt += 1
             total += 1
             if(total % 100 == 0):
@@ -59,24 +59,24 @@ def importData():
         print('Time used:', str(timeUsed) + 's', end='  ')
         print('Time estimated:', str(format(timeUsed*N/total/3600, '.2f'))+'h', end='  ')
         print('Time remaining:', str(format((timeUsed*N/total-timeUsed)/3600, '.2f'))+'h')
-    print('Total size: ', collection.count_documents({}))
+    print('Total size: ', priceColl.count_documents({}))
 
 def createIndex():
     indexes=['symbol','date','change_rate']
     for idx in indexes:
         print('Creating index of',idx)
-        collection.create_index([(idx,1)])
+        priceColl.create_index([(idx,1)])
 
 def updateSymbol():
     symbolSet=set()
-    res=collection.find()
+    res=priceColl.find()
     for i in res:
         s=i['symbol']
         if(s not in symbolSet and '.' in s):
             symbolSet.add(s)
             parts=s.split('.')
             print(s,parts[1]+parts[0])
-            collection.update_many({'symbol':s},{"$set":{"symbol":parts[1]+parts[0]}})
+            priceColl.update_many({'symbol':s},{"$set":{"symbol":parts[1]+parts[0]}})
     print(len(symbolSet))
 
 # importData()
