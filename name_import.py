@@ -57,6 +57,7 @@ def fetch(page):
         print('|', end='', flush=True)
         time.sleep(2)
     print()
+    saveJson(data)
 
 
 def saveJson(data):
@@ -80,8 +81,8 @@ def saveCSV(data):
 
 
 if __name__ == '__main__':
-    # fetch(PAGE)
+    fetch(PAGE)
     # saveJson(data)
-    loadJson('./docker-compose/data/2021-04-13.json')
-    importData()
+    # loadJson('./docker-compose/data/2021-04-13.json')
+    # importData()
     # updataSymbol()

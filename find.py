@@ -5,7 +5,8 @@ from matplotlib import pyplot as plt
 # pip3 install matplotlib
 
 start = "2017-01-24"
-PERIOD = 250
+PERIOD = 100
+COMMISSION=2.5/10000
 
 principal = 100.0
 
@@ -33,20 +34,22 @@ def calc(start, period):
         symbol = prePrice['symbol']
         todayPrice = priceColl.find_one({'symbol': symbol, 'date': start})
         nextPrice = priceColl.find_one({'symbol': symbol, 'date': nextTradingDay(start)})
-        principal = principal/todayPrice['open']*nextPrice['close']
-        print(PERIOD-period, end='\t')
+        principal = principal*(1-COMMISSION)/todayPrice['open']*nextPrice['close']
+        y.append(principal/100)
         name = nameColl.find_one({'symbol': symbol})['name']
+
+        print(PERIOD-period, end='\t')
         print(name.ljust(6, ' '), end='\t')
         print(todayPrice['date'], end='\t')
         print(format(prePrice['change_rate'], '.2f'), end='\t')
         print(format(todayPrice['change_rate'], '.2f'), end='\t')
         print(format(nextPrice['change_rate'], '.2f'), end='\t')
         print(format(principal, '.2f'))
-        y.append(principal/100)
+
         calc(nextTradingDay(start), period-1)
     else:
-        draw()
         print('\nEarnings of', PERIOD, 'days:',format(principal/100-1, '.2f'), 'times')
+        draw()
 
 
 def getDay(today, offset):
