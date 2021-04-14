@@ -1,6 +1,7 @@
 import time
 import json
 import requests
+import pymongo
 import datetime
 import pandas as pd
 
@@ -11,11 +12,44 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
 }
 
+client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
+db = client["stock"]
+collection = db["name"]
+
+def importData():
+    doc=[]
+    collection.drop()
+    for i in data:
+        item = {}
+        item['symbol']=i['symbol']
+        item['name']=i['name']
+        doc.append(item)
+    collection.insert_many(doc)
+    print(collection.count_documents({}), 'items saved to mongo')
+    
+    indexes=['symbol']
+    for idx in indexes:
+        print('Creating index of',idx)
+        collection.create_index([(idx,1)])
+
+def updataSymbol():
+    symbolSet=set()
+    res=collection.find()
+    for i in res:
+        s=i['symbol']
+        if(s not in symbolSet):
+            symbolSet.add(s)
+            parts=s.split('.')
+            print(s,parts[1]+parts[0])
+            collection.update_many({'symbol':s},{"$set":{"symbol":parts[1]+parts[0]}})
+    print(len(symbolSet))
+    
+
 
 def fetch(page):
     for i in range(page):
-        model = 'https://xueqiu.com/service/v5/stock/screener/quote/list?page={}&size=90&order=desc&orderby=percent&order_by=percent&market=CN&type=sh_sz&_=1618316808034'
-        url = model.format(i+1)
+        pattern = 'https://xueqiu.com/service/v5/stock/screener/quote/list?page={}&size=90&order=desc&orderby=percent&order_by=percent&market=CN&type=sh_sz&_=1618316808034'
+        url = pattern.format(i+1)
         response = requests.get(url, headers=headers).json()
         stocks = response['data']['list']
         data.extend(stocks)
@@ -49,8 +83,5 @@ if __name__ == '__main__':
     # fetch(PAGE)
     # saveJson(data)
     loadJson('./docker-compose/data/2021-04-13.json')
-    print(len(data))
-    cnt = 0
-    for i in data:
-        cnt = cnt+1
-        print(cnt, i['symbol'], i['name'])
+    importData()
+    # updataSymbol()

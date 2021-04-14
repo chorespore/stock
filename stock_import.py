@@ -16,7 +16,7 @@ collection = db["price"]
 def importData():
     confirm = input("Delete database y/n ? \n")
     if(confirm == 'y'):
-        collection.delete_many({})
+        collection.drop()
 
     total = 0
     all_start = time.time()
@@ -67,5 +67,18 @@ def createIndex():
         print('Creating index of',idx)
         collection.create_index([(idx,1)])
 
+def updateSymbol():
+    symbolSet=set()
+    res=collection.find()
+    for i in res:
+        s=i['symbol']
+        if(s not in symbolSet and '.' in s):
+            symbolSet.add(s)
+            parts=s.split('.')
+            print(s,parts[1]+parts[0])
+            collection.update_many({'symbol':s},{"$set":{"symbol":parts[1]+parts[0]}})
+    print(len(symbolSet))
+
 # importData()
-createIndex()
+# createIndex()
+updateSymbol()
