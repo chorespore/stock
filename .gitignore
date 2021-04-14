@@ -131,3 +131,5 @@ dmypy.json
 # Stock data
 /allindex
 /allstock
+
+/docker-compose/data
