@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 # Stock data
+/snowball
 /allindex
 /allstock
 

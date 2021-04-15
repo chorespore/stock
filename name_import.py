@@ -61,7 +61,7 @@ def fetch(page):
 
 
 def saveJson(data):
-    filename = '{}.json'.format(str(datetime.datetime.now().date()))
+    filename = './snowball/{}.json'.format(str(datetime.datetime.now().date()))
     with open(filename, 'w') as file_obj:
         json.dump(data, file_obj)
         print(len(data), 'items saved')
