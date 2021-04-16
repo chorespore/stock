@@ -25,8 +25,7 @@ def createFolder(dir):
 
 def saveJson(data):
     createFolder('./snowball')
-    filename = './snowball/em{}.json'.format(
-        str(datetime.datetime.now().date()))
+    filename = './snowball/em{}.json'.format(str(datetime.datetime.now().date()))
     with open(filename, 'w') as file_obj:
         json.dump(data, file_obj)
         print(len(data), 'items saved')
@@ -34,7 +33,7 @@ def saveJson(data):
 
 def fetch():
     page = getPageSize()
-    print(page,'pages to fetch')
+    print('Pages to fetch:', page)
     for i in range(1, page):
         url = PATTERN.format(i)
         raw = requests.get(url, headers=headers).json()['data']
@@ -51,5 +50,6 @@ def getPageSize():
     url = PATTERN.format(1)
     total = requests.get(url, headers=headers).json()['data']['total']
     return math.ceil(total/20)+1
+
 
 fetch()
