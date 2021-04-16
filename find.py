@@ -4,8 +4,8 @@ import numpy as np
 from matplotlib import pyplot as plt
 # pip3 install matplotlib
 
-start = "2017-01-24"
-PERIOD = 100
+start = "2018-01-01"
+PERIOD = 150
 COMMISSION=2.5/10000
 
 principal = 100.0
@@ -22,7 +22,7 @@ display = {"symbol": 1, "date": 1, "change_rate": 1}
 
 
 def pick(date):
-    query = {"date": date, "change_rate": {"$gt": 9.9}, "change_rate": {"$lt": 2000.0}}
+    query = {"date": date, "change_rate": {"$gt": 9.9}, "change_rate": {"$lt": 10.5}}
     res = priceColl.find(query).skip(0).limit(10).sort('change_rate', -1)
     return res[0]
 
@@ -34,9 +34,17 @@ def calc(start, period):
         symbol = prePrice['symbol']
         todayPrice = priceColl.find_one({'symbol': symbol, 'date': start})
         nextPrice = priceColl.find_one({'symbol': symbol, 'date': nextTradingDay(start)})
+        if(todayPrice==None or nextPrice==None):
+            print('-----------------------------------------------------')
+            y.append(principal/100)
+            calc(nextTradingDay(start), period-1)
+            return
         principal = principal*(1-COMMISSION)/todayPrice['open']*nextPrice['close']
         y.append(principal/100)
-        name = nameColl.find_one({'symbol': symbol})['name']
+        name='一一一一'
+        nameRes = nameColl.find_one({'symbol': symbol})
+        if(nameRes!=None):
+            name=nameRes['name']
 
         print(PERIOD-period, end='\t')
         print(name.ljust(6, ' '), end='\t')
