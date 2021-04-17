@@ -22,7 +22,7 @@ display = {"symbol": 1, "date": 1, "change_rate": 1}
 
 
 def pick(date):
-    query = {"date": date, "change_rate": {"$gt": 9.9}, "change_rate": {"$lt": 10.5}}
+    query = {"date": date, "change_rate": {"$gt": 9.9,"$lt": 1000.5}}
     res = priceColl.find(query).skip(0).limit(10).sort('change_rate', -1)
     return res[0]
 
@@ -59,6 +59,13 @@ def calc(start, period):
         print('\nEarnings of', PERIOD, 'days:',format(principal/100-1, '.2f'), 'times')
         draw()
 
+def getTradingDays(start,period):
+    tradingDays=[]
+    for i in range(period):
+        day=nextTradingDay(start)
+        tradingDays.append(day)
+        start=day
+    return tradingDays
 
 def getDay(today, offset):
     today = datetime.datetime.strptime(today, '%Y-%m-%d').date()
@@ -90,5 +97,5 @@ def draw():
     plt.plot(x, y)
     plt.show()
 
-
-calc(nextTradingDay(start), PERIOD)
+if __name__ == '__main__':
+    calc(nextTradingDay(start), PERIOD)
