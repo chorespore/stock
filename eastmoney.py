@@ -51,5 +51,5 @@ def getPageSize():
     total = requests.get(url, headers=headers).json()['data']['total']
     return math.ceil(total/20)+1
 
-
-fetch()
+if __name__ == '__main__':
+    fetch()
