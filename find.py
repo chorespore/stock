@@ -5,7 +5,7 @@ from matplotlib import pyplot as plt
 # pip3 install matplotlib
 
 start = "2018-01-01"
-PERIOD = 150
+PERIOD = 250
 COMMISSION=2.5/10000
 
 principal = 100.0
@@ -94,6 +94,13 @@ def draw():
     plt.title("Retrospective Diagram")
     plt.xlabel("Days")
     plt.ylabel("Returns")
+    plt.plot(x, y)
+    plt.show()
+
+def draw(x,y):
+    plt.title("Retrospective Diagram")
+    plt.xlabel("Days")
+    plt.ylabel("Count")
     plt.plot(x, y)
     plt.show()
 
