@@ -7,8 +7,6 @@ import pymongo
 import datetime
 import pandas as pd
 
-data = []
-
 fieldMap = {'f2': 'current', 'f3': 'percent', 'f4': 'change', 'f12': 'symbol', 'f14': 'name',
             'f15': 'high', 'f16': 'low', 'f17': 'open', 'f18': 'close', 'f23': 'pe', 'f115': 'pb_ttm'}
 headers = {
@@ -31,7 +29,8 @@ def saveJson(data):
         print(len(data), 'items saved')
 
 
-def fetch():
+def fetch(save=False):
+    data = []
     page = getPageSize()
     print('Pages to fetch:', page)
     for i in range(1, page):
@@ -42,14 +41,17 @@ def fetch():
         data.extend(stockList)
         print('|', end='', flush=True)
         time.sleep(2)
+    if(save == True):
+        saveJson(data)
     print()
-    saveJson(data)
+    return data
 
 
 def getPageSize():
     url = PATTERN.format(1)
     total = requests.get(url, headers=headers).json()['data']['total']
-    return math.ceil(total/20)+1
+    return math.ceil(total / 20) + 1
+
 
 if __name__ == '__main__':
-    fetch()
+    fetch(True)

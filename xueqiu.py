@@ -1,3 +1,4 @@
+import os
 import time
 import json
 import math
@@ -13,28 +14,35 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36',
 }
 
-data = []
 
-
-def fetch():
+def fetch(save=False):
+    data = []
     page = getPageSize()
     print('Pages to fetch:', page)
     for i in range(page):
-        url = PATTERN.format(i+1)
+        url = PATTERN.format(i + 1)
         response = requests.get(url, headers=headers).json()
         stocks = response['data']['list']
         data.extend(stocks)
         print('|', end='', flush=True)
         time.sleep(2)
+    if(save == True):
+        saveJson(data)
     print()
-    saveJson(data)
+    return data
+
+
+def normalize(data):
+    for i in data:
+        i.pop('has_follow')
+        i.pop('followers')
     return data
 
 
 def getPageSize():
     url = PATTERN.format(1)
     total = requests.get(url, headers=headers).json()['data']['count']
-    return math.ceil(total/90)
+    return math.ceil(total / 90)
 
 
 def saveJson(data):
@@ -45,10 +53,11 @@ def saveJson(data):
 
 
 def loadJson(filename):
-    global data
     with open(filename) as file_obj:
         data = json.load(file_obj)
-        print(len(data), 'items loaded')
+        print(len(data), 'items loaded form', os.path.basename(filename))
+        return data[0:2]
+
 
 def saveCSV(data):
     df = pd.DataFrame.from_dict(data)
@@ -57,6 +66,9 @@ def saveCSV(data):
 
 
 if __name__ == '__main__':
-    # loadJson('./docker-compose/data/2021-04-13.json')
-    d = fetch()
-    print(len(d))
+    fetch(True)
+    # d=loadJson('./snowball/2021-04-19.json')
+    # print(len(d))
+    # print(d)
+    # d=normalize(d)
+    # print(d)
