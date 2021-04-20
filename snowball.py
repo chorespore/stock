@@ -69,9 +69,7 @@ def saveCSV(data):
 
 
 if __name__ == '__main__':
-    # fetch(True)
-    d = loadJson('./snowball/2021-04-19.json')
-    # print(len(d))
+    fetch(True)
+    # d = loadJson('./snowball/2021-04-19.json')
+    # d = normalize(d)
     # print(d)
-    d = normalize(d)
-    print(d)
