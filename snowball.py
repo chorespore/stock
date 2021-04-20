@@ -59,7 +59,7 @@ def loadJson(filename):
     with open(filename) as file_obj:
         data = json.load(file_obj)
         print(len(data), 'items loaded form', os.path.basename(filename))
-        return data
+        return normalize(data)
 
 
 def saveCSV(data):

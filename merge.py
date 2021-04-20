@@ -14,7 +14,6 @@ if __name__ == '__main__':
 
     # snowData = snowball.loadJson('./snowball/2021-04-19.json')
     # eastData = eastmoney.loadJson('./snowball/em2021-04-19.json')
-    # snowData=snowball.normalize(snowData)
 
     for i in snowData:
         snowDict[i['symbol'][2:]] = i
