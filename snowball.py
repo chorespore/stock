@@ -26,16 +26,19 @@ def fetch(save=False):
         data.extend(stocks)
         print('|', end='', flush=True)
         time.sleep(2)
+    print()
+    data = normalize(data)
     if(save == True):
         saveJson(data)
-    print()
     return data
 
 
 def normalize(data):
     for i in data:
-        i.pop('has_follow')
-        i.pop('followers')
+        if(i.__contains__('has_follow')):
+            del i['has_follow']
+        if(i.__contains__('followers')):
+            del i['followers']
     return data
 
 
@@ -56,7 +59,7 @@ def loadJson(filename):
     with open(filename) as file_obj:
         data = json.load(file_obj)
         print(len(data), 'items loaded form', os.path.basename(filename))
-        return data[0:2]
+        return data
 
 
 def saveCSV(data):
@@ -66,9 +69,9 @@ def saveCSV(data):
 
 
 if __name__ == '__main__':
-    fetch(True)
-    # d=loadJson('./snowball/2021-04-19.json')
+    # fetch(True)
+    d = loadJson('./snowball/2021-04-19.json')
     # print(len(d))
     # print(d)
-    # d=normalize(d)
-    # print(d)
+    d = normalize(d)
+    print(d)

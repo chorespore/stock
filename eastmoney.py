@@ -41,10 +41,17 @@ def fetch(save=False):
         data.extend(stockList)
         print('|', end='', flush=True)
         time.sleep(2)
+    print()
     if(save == True):
         saveJson(data)
-    print()
     return data
+
+
+def loadJson(filename):
+    with open(filename) as file_obj:
+        data = json.load(file_obj)
+        print(len(data), 'items loaded form', os.path.basename(filename))
+        return data
 
 
 def getPageSize():
