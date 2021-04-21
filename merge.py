@@ -6,7 +6,8 @@ import eastmoney
 fieldMap = {'current': 'f2', 'percent': 'f3', 'change': 'f4', 'symbol': 'f12', 'name': 'f14',
             'high': 'f15', 'low': 'f16', 'open': 'f17', 'close': 'f18', 'pe': 'f23', 'pb_ttm': 'f115'}
 
-if __name__ == '__main__':
+
+def merge():
     data = []
     snowDict, eastDict = dict(), dict()
     snowData = snowball.fetch()
@@ -34,3 +35,7 @@ if __name__ == '__main__':
 
     snowball.saveJson(data)
     database.importSnowball(data)
+
+
+if __name__ == '__main__':
+    merge()

@@ -3,7 +3,7 @@ import json
 import requests
 import pymongo
 import datetime
-import xueqiu
+import snowball
 import pandas as pd
 
 
@@ -44,5 +44,5 @@ def updataSymbol():
 
 
 if __name__ == '__main__':
-    data = xueqiu.fetch()
+    data = snowball.fetch()
     importData(data)
