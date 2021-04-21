@@ -1,6 +1,6 @@
 import datetime
 import snowball
-import database
+import dao
 import eastmoney
 
 fieldMap = {'current': 'f2', 'percent': 'f3', 'change': 'f4', 'symbol': 'f12', 'name': 'f14',
@@ -34,7 +34,7 @@ def merge():
         data.append(item)
 
     snowball.saveJson(data)
-    database.importSnowball(data)
+    dao.importSnowball(data)
 
 
 if __name__ == '__main__':
