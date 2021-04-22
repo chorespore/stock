@@ -37,5 +37,14 @@ def merge():
     dao.importSnowball(data)
 
 
+def importFromJson():
+    data = snowball.loadJson('./snowball/2021-04-23.json')
+    print(len(data))
+    for i in data:
+        i['date'] = '2021-04-22'
+    dao.importSnowball(data)
+
+
 if __name__ == '__main__':
     merge()
+    # importFromJson()
