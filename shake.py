@@ -28,7 +28,7 @@ def findShakes():
         # print(aStock)
 
         window = []
-        for i in range(1, len(aStock) - 1):
+        for i in range(1, len(aStock) - 3):
             if(find.nextTradingDay(aStock[i - 1]['date']) == aStock[i]['date']):
                 if(len(window) == 2):
                     if(aStock[i]['change_rate'] < 0):
@@ -42,6 +42,16 @@ def findShakes():
                         d4 = quoteDao.find_one({'symbol': name['symbol'], 'date': find.nextTradingDay(aStock[i]['date'])})
                         if(d4 is not None):
                             item['d4'] = d4['change_rate']
+                            d5 = quoteDao.find_one({'symbol': name['symbol'], 'date': find.nextTradingDay(d4['date'])})
+                            if(d5 is not None):
+                                item['d5'] = d5['change_rate']
+                                d6 = quoteDao.find_one({'symbol': name['symbol'], 'date': find.nextTradingDay(d5['date'])})
+                                if(d6 is not None):
+                                    item['d6'] = d6['change_rate']
+                                else:
+                                    item['d6'] = 0.0
+                            else:
+                                item['d5'] = 0.0
                         else:
                             item['d4'] = 0.0
                         window.clear()
