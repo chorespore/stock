@@ -64,7 +64,7 @@ def loadJson(filename):
 
 def saveCSV(data):
     df = pd.DataFrame.from_dict(data)
-    df.to_csv('{}.csv'.format(str(datetime.datetime.now().date())))
+    df.to_csv('{}.csv'.format(str(datetime.datetime.now().date())), encoding="utf_8_sig")
     print(len(data), 'items saved to CSV')
 
 
