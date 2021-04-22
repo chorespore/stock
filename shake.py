@@ -13,19 +13,11 @@ def findShakes():
     total = nameDao.count_documents({})
     print('Items to search:', total)
     for name in nameDao.find():
-        #  'date': {'$gt': '2016-06-01'},
         res = quoteDao.find({'symbol': name['symbol'], "$or": [{"change_rate": {"$gt": 9.9}}, {"change_rate": {"$lt": -9.9}}]}).sort('date', 1)
         aStock = []
         for i in res:
             del i['_id']
             aStock.append(i)
-
-        # stop = stop + 1
-        # if(stop == 20):
-        #     saveCSV(results)
-        #     return
-
-        # print(aStock)
 
         window = []
         for i in range(1, len(aStock) - 3):
@@ -60,7 +52,6 @@ def findShakes():
                     else:
                         window.pop(0)
                         window.append(aStock[i])
-                        # print('\rPattern Found:', len(results), end='')
                 elif(len(window) < 2):
                     if(aStock[i]['change_rate'] > 0):
                         window.append(aStock[i])
@@ -71,6 +62,7 @@ def findShakes():
 
         cnt = cnt + 1
         print('\rProgerss:', str(len(results)), format(cnt * 100 / total, '.2f') + '%', end='')
+    print()
     saveCSV(results)
 
 
