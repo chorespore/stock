@@ -2,7 +2,8 @@ import pymongo
 
 client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
 db = client["stock"]
-priceCol = db["price"]
+quotes = db["price"]
+names = db["name"]
 snowballCol = db["snowball"]
 
 
