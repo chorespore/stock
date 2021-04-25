@@ -24,7 +24,7 @@ def getPE(symbol):
     pe = response['pe_ttm']
     for i in range(len(pe)):
         data[date[i]] = pe[i]
-    tools.saveJson(data, './snowball/pe/{}.json'.format(f), log=False)
+    tools.saveJson(data, './snowball/pe/{}.json'.format(symbol), log=False)
     time.sleep(2)
     return data
 
@@ -65,7 +65,7 @@ def update():
         print('\rProgerss:', cnt, format(cnt * 100 / len(files), '.2f') + '%', end='')
 
 
-def fetch(save=False):
+def fetch():
     cnt = 0
     symbols = getSymbols()
     files = set(os.listdir('./snowball/pe'))
@@ -78,15 +78,6 @@ def fetch(save=False):
                 print('\texcption', i)
         cnt = cnt + 1
         print('\rProgerss:', cnt, i, format(cnt * 100 / len(symbols), '.2f') + '%', end='')
-
-
-def normalize(data):
-    for i in data:
-        if(i.__contains__('has_follow')):
-            del i['has_follow']
-        if(i.__contains__('followers')):
-            del i['followers']
-    return data
 
 
 if __name__ == '__main__':
