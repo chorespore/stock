@@ -53,8 +53,10 @@ def merge():
 
 def update():
     cnt = 0
+    start = time.time()
     files = os.listdir('./snowball/pe')
-    files = ['SZ000001.json', 'SZ000002.json']
+    total = len(files)
+    # files = ['SZ000001.json', 'SZ000002.json']
     for f in files:
         aStock = tools.loadJson('./snowball/pe/' + f, log=False)
         for date, pe in aStock.items():
@@ -62,7 +64,10 @@ def update():
             if(target is not None):
                 quoteDao.update_one({'_id': target['_id']}, {'$set': {'pe_ttm': pe}})
         cnt = cnt + 1
-        print('\rProgerss:', cnt, format(cnt * 100 / len(files), '.2f') + '%', end='')
+        timeUsed = int(time.time() - start)
+        print('\rProgerss:', cnt, format(cnt * 100 / total, '.2f') + '%', end='')
+        print('\tTime used:', str(timeUsed) + 's', end='')
+        print('\tTime remaining:', str(format((timeUsed * total / cnt - timeUsed) / 3600, '.2f')) + 'h', end='')
 
 
 def fetch():
@@ -81,5 +86,6 @@ def fetch():
 
 
 if __name__ == '__main__':
-    fetch()
-    print(err)
+    # fetch()
+    # print(err)
+    update()
