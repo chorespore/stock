@@ -1,6 +1,6 @@
 import dao
+import tools
 import find
-import pandas as pd
 
 
 quoteDao = dao.quotes
@@ -34,13 +34,7 @@ def topBottom():
         cnt = cnt + 1
         print('\rProgerss:', str(len(results)), format(cnt * 100 / total, '.2f') + '%', end='')
     print()
-    saveCSV(results)
-
-
-def saveCSV(data):
-    df = pd.DataFrame.from_dict(data)
-    df.to_csv('./snowball/TopBottom.csv', encoding="utf_8_sig")
-    print(len(data), 'items saved to CSV')
+    tools.saveCSV(results, './snowball/TopBottom.csv')
 
 
 if __name__ == '__main__':
