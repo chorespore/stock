@@ -62,10 +62,7 @@ def update():
         for date, pe in aStock.items():
             quoteDao.update_one({'symbol': f.split('.')[0], 'date': date}, {'$set': {'pe_ttm': pe}})
         cnt = cnt + 1
-        timeUsed = int(time.time() - start)
-        print('\rProgerss:', cnt, format(cnt * 100 / total, '.2f') + '%', end='')
-        print('\tTime used:', str(timeUsed) + 's', end='')
-        print('\tTime remaining:', str(format((timeUsed * total / cnt - timeUsed) / 3600, '.2f')) + 'h', end='')
+        tools.showProgress(cnt, total, start)
 
 
 def fetch():
