@@ -21,12 +21,14 @@ def merge():
 def update():
     cnt = 0
     files = os.listdir('./snowball/pe')
-    for symbol in files:
-        aStock = tools.loadJson('./snowball/pe/' + symbol, log=False)
+    files = ['SZ000001.json', 'SZ000002.json']
+
+    for f in files:
+        aStock = tools.loadJson('./snowball/pe/' + f, log=False)
         for date, pe in aStock.items():
-            target = quoteDao.find_one({'symbol': symbol, 'date': date})
+            target = quoteDao.find_one({'symbol': f.split('.')[0], 'date': date})
             if(target is not None):
-                quoteDao.update({'_id': target['_id']}, {'$set': {'pe_ttm': pe}})
+                quoteDao.update_one({'_id': target['_id']}, {'$set': {'pe_ttm': pe}})
         cnt = cnt + 1
         print('\rProgerss:', cnt, format(cnt * 100 / len(files), '.2f') + '%', end='')
 
