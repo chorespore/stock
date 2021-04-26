@@ -1,6 +1,8 @@
 import os
 import csv
 import time
+import json
+import tools
 import pymongo
 import datetime
 import pandas as pd
@@ -11,13 +13,13 @@ titles = ['symbol', 'date', 'open', 'high', 'low', 'close',
 
 client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
 db = client["stock"]
-priceColl = db["price"]
+priceDao = db["price"]
 
 
 def importData():
     confirm = input("Delete database y/n ? \n")
     if(confirm == 'y'):
-        priceColl.drop()
+        priceDao.drop()
 
     total = 0
     all_start = time.time()
@@ -50,7 +52,7 @@ def importData():
                 else:
                     content = float(values[j])
                 item[title] = content
-            priceColl.insert_one(item)
+            priceDao.insert_one(item)
             cnt += 1
             total += 1
             if(total % 100 == 0):
@@ -61,17 +63,17 @@ def importData():
         print('Time used:', str(timeUsed) + 's', end='  ')
         print('Time estimated:', str(format(timeUsed * N / total / 3600, '.2f')) + 'h', end='  ')
         print('Time remaining:', str(format((timeUsed * N / total - timeUsed) / 3600, '.2f')) + 'h')
-    print('Total size: ', priceColl.count_documents({}))
+    print('Total size: ', priceDao.count_documents({}))
 
 
 def createIndex():
     indexes = ['symbol', 'date', 'change_rate']
     for idx in indexes:
         print('Creating index of', idx)
-        priceColl.create_index([(idx, 1)])
+        priceDao.create_index([(idx, 1)])
 
     print('Creating index of', 'symbol', 'date')
-    priceColl.create_index(
+    priceDao.create_index(
         [("symbol", pymongo.ASCENDING), ("date", pymongo.ASCENDING)],
         unique=True
     )
@@ -79,18 +81,42 @@ def createIndex():
 
 def updateSymbol():
     symbolSet = set()
-    res = priceColl.find()
+    res = priceDao.find()
     for i in res:
         s = i['symbol']
         if(s not in symbolSet and '.' in s):
             symbolSet.add(s)
             parts = s.split('.')
             print(s, parts[1] + parts[0])
-            priceColl.update_many({'symbol': s}, {"$set": {"symbol": parts[1] + parts[0]}})
+            priceDao.update_many({'symbol': s}, {"$set": {"symbol": parts[1] + parts[0]}})
     print(len(symbolSet))
+
+
+def importFromJson():
+    confirm = input("Delete database y/n ? \n")
+    if(confirm == 'y'):
+        priceDao.drop()
+
+    total = 0
+    with open("./snowball/price.json") as lines:
+        for line in lines:
+            total = total + 1
+    print(total, 'items to insert')
+
+    cnt = 0
+    start = time.time()
+    with open("./snowball/price.json") as lines:
+        for line in lines:
+            item = json.loads(line)
+            del item['_id']
+            priceDao.insert_one(item)
+            cnt = cnt + 1
+            if(cnt % 1000 == 0):
+                tools.showProgress(cnt, total, start)
 
 
 if __name__ == '__main__':
     # importData()
-    createIndex()
+    # createIndex()
     # updateSymbol()
+    importFromJson()

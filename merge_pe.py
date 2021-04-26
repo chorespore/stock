@@ -18,22 +18,17 @@ def merge():
     # print(files)
 
 
-def update():
-    cnt = 0
-    files = os.listdir('./snowball/pe')
-    files = ['SZ000001.json', 'SZ000002.json']
-
-    for f in files:
-        aStock = tools.loadJson('./snowball/pe/' + f, log=False)
-        for date, pe in aStock.items():
-            target = quoteDao.find_one({'symbol': f.split('.')[0], 'date': date})
-            if(target is not None):
-                quoteDao.update_one({'_id': target['_id']}, {'$set': {'pe_ttm': pe}})
-        cnt = cnt + 1
-        print('\rProgerss:', cnt, format(cnt * 100 / len(files), '.2f') + '%', end='')
+def peCoverage():
+    total = 10358691
+    pe = 0
+    res = quoteDao.find({}, {'symbol': 1, 'pe_ttm': 1})
+    for i in res:
+        if(i.__contains__('pe_ttm')):
+            pe = pe + 1
+    print(pe, pe / total)
 
 
 if __name__ == '__main__':
     # merge()
     # getPE('SH601318')
-    update()
+    peCoverage()

@@ -45,4 +45,5 @@ def updataSymbol():
 
 if __name__ == '__main__':
     data = snowball.fetch()
+    # data=snowball.loadJson('')
     importData(data)
