@@ -25,7 +25,7 @@ def importData():
 
     N = 0
     for f in files:
-        N = N+len(open(os.path.join(src, f), encoding='utf-8').readlines())
+        N = N + len(open(os.path.join(src, f), encoding='utf-8').readlines())
     print(N, 'lines to insert')
 
     for i, f in enumerate(files):
@@ -55,12 +55,12 @@ def importData():
             total += 1
             if(total % 100 == 0):
                 print('|', end='', flush=True)
-        timeUsed = int(time.time()-all_start)
-        print(" Speed:", int(cnt/(time.time()-start)), end='')
-        print('  Progress:', str(total) + '/' + str(N),str(format(total/N*100, '.3f'))+'%')
+        timeUsed = int(time.time() - all_start)
+        print(" Speed:", int(cnt / (time.time() - start)), end='')
+        print('  Progress:', str(total) + '/' + str(N), str(format(total / N * 100, '.3f')) + '%')
         print('Time used:', str(timeUsed) + 's', end='  ')
-        print('Time estimated:', str(format(timeUsed*N/total/3600, '.2f'))+'h', end='  ')
-        print('Time remaining:', str(format((timeUsed*N/total-timeUsed)/3600, '.2f'))+'h')
+        print('Time estimated:', str(format(timeUsed * N / total / 3600, '.2f')) + 'h', end='  ')
+        print('Time remaining:', str(format((timeUsed * N / total - timeUsed) / 3600, '.2f')) + 'h')
     print('Total size: ', priceColl.count_documents({}))
 
 
@@ -69,6 +69,12 @@ def createIndex():
     for idx in indexes:
         print('Creating index of', idx)
         priceColl.create_index([(idx, 1)])
+
+    print('Creating index of', 'symbol', 'date')
+    priceColl.create_index(
+        [("symbol", pymongo.ASCENDING), ("date", pymongo.ASCENDING)],
+        unique=True
+    )
 
 
 def updateSymbol():
@@ -79,11 +85,12 @@ def updateSymbol():
         if(s not in symbolSet and '.' in s):
             symbolSet.add(s)
             parts = s.split('.')
-            print(s, parts[1]+parts[0])
-            priceColl.update_many({'symbol': s}, {"$set": {"symbol": parts[1]+parts[0]}})
+            print(s, parts[1] + parts[0])
+            priceColl.update_many({'symbol': s}, {"$set": {"symbol": parts[1] + parts[0]}})
     print(len(symbolSet))
 
 
-# importData()
-# createIndex()
-updateSymbol()
+if __name__ == '__main__':
+    # importData()
+    createIndex()
+    # updateSymbol()

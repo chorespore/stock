@@ -60,9 +60,7 @@ def update():
     for f in files:
         aStock = tools.loadJson('./snowball/pe/' + f, log=False)
         for date, pe in aStock.items():
-            target = quoteDao.find_one({'symbol': f.split('.')[0], 'date': date})
-            if(target is not None):
-                quoteDao.update_one({'_id': target['_id']}, {'$set': {'pe_ttm': pe}})
+            quoteDao.update_one({'symbol': f.split('.')[0], 'date': date}, {'$set': {'pe_ttm': pe}})
         cnt = cnt + 1
         timeUsed = int(time.time() - start)
         print('\rProgerss:', cnt, format(cnt * 100 / total, '.2f') + '%', end='')
