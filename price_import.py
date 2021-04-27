@@ -117,6 +117,6 @@ def importFromJson():
 
 if __name__ == '__main__':
     # importData()
-    # createIndex()
     # updateSymbol()
     importFromJson()
+    createIndex()
