@@ -34,8 +34,9 @@ def stock(keyword):
 @app.route('/listAll', methods=['GET'])
 def listAll():
     data = []
-    res = dao.names.find({})
+    res = dao.names.find({}).sort('symbol', 1)
     for i in res:
+        del i['_id']
         data.append(i)
     return json_util.dumps(data)
 

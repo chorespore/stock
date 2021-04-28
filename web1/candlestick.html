@@ -59,6 +59,19 @@
             -o-transition: right .3s;
             transition: right .3s;
         }
+
+        .stock-row {
+            z-index: 2;
+            overflow: auto;
+            background: #ffffff;
+            height: 32px;
+            text-align: center;
+            border: 1px solid #dedede;
+            border-radius: 0px 0px 0px 0px;
+            -webkit-transition: right .3s;
+            -o-transition: right .3s;
+            transition: right .3s;
+        }
     </style>
 </head>
 
@@ -66,11 +79,8 @@
 
     <div id="app" class="side-bar">
         <input v-model="expression" v-bind:style="inputStyles" />
-        <div v-for="r in 1" v-bind:style="rowStyles">
-            <button v-for="key in keyboard[r-1]" v-bind:style="[buttonStyles,key=='=' ? equalStyles : '']"
-                v-on:click="expression=press(expression,key)">
-                {{ key }}
-            </button>
+        <div class="stock-row" v-for="stock in stocks" v-on:click="expression=press(expression,stock['symbol'])">
+            {{stock["symbol"]}}
         </div>
     </div>
 
@@ -98,8 +108,8 @@
         getQuote("SZ300650")
 
         function getQuote(symbol) {
-            axios.get(`http://localhost:8086/quote/${symbol}`, {
-            })
+            axios
+                .get(`http://localhost:8086/quote/${symbol}`, {})
                 .then(function (response) {
                     rawData = response.data
                     draw()
@@ -195,57 +205,57 @@
                     type: 'inside'
                 }],
                 series: [
-                    // {
-                    //     type: 'candlestick',
-                    //     name: '日K',
-                    //     data: data,
-                    //     itemStyle: {
-                    //         color: '#FD1050',
-                    //         color0: '#0CF49B',
-                    //         borderColor: '#FD1050',
-                    //         borderColor0: '#0CF49B'
-                    //     }
-                    // },
-                    // {
-                    //     name: '日K',
-                    //     type: 'line',
-                    //     data: calculateMA(1, data),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1
-                    //     }
-                    // },
-                    // {
-                    //     name: 'MA5',
-                    //     type: 'line',
-                    //     data: calculateMA(5, data),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1
-                    //     }
-                    // },
-                    // {
-                    //     name: 'MA10',
-                    //     type: 'line',
-                    //     data: calculateMA(10, data),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1
-                    //     }
-                    // },
-                    // {
-                    //     name: 'MA20',
-                    //     type: 'line',
-                    //     data: calculateMA(20, data),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1
-                    //     }
-                    // },
+                    {
+                        type: 'candlestick',
+                        name: '日K',
+                        data: data,
+                        itemStyle: {
+                            color: '#FD1050',
+                            color0: '#0CF49B',
+                            borderColor: '#FD1050',
+                            borderColor0: '#0CF49B'
+                        }
+                    },
+                    {
+                        name: '日K',
+                        type: 'line',
+                        data: calculateMA(1, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: 'MA5',
+                        type: 'line',
+                        data: calculateMA(5, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: 'MA10',
+                        type: 'line',
+                        data: calculateMA(10, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: 'MA20',
+                        type: 'line',
+                        data: calculateMA(20, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
                     {
                         name: 'MA30',
                         type: 'line',
@@ -263,10 +273,7 @@
                 myChart.setOption(option);
             }
         }
-    </script>
 
-
-    <script>
         new Vue({
             el: "#app",
             methods: {
@@ -281,19 +288,15 @@
                     } else {
                         expression = expression + key;
                     }
+                    expression = key
+                    getQuote(expression)
                     console.log(expression);
                     return expression;
                 }
             },
             data: {
                 expression: "",
-                keyboard: [
-                    ["AC", "(", ")", "<"],
-                    ["7", "8", "9", "/"],
-                    ["4", "5", "6", "*"],
-                    ["1", "2", "3", "-"],
-                    [".", "0", "=", "+"]
-                ],
+                stocks: [],
                 buttonStyles: {
                     backgroundColor: "#008CBA",
                     border: "none",
@@ -306,9 +309,6 @@
                     height: "64px",
                     fontSize: "24px",
                     margin: "1px 6px"
-                },
-                equalStyles: {
-                    backgroundColor: "#f44336"
                 },
                 sideBarStyles: {
                     position: "absolute",
@@ -340,6 +340,16 @@
                     backgroundColor: "#ccc",
                     position: "absolute"
                 }
+            },
+            mounted() {
+                axios
+                    .get("http://localhost:8086/listAll")
+                    .then(response => {
+                        this.stocks = response.data
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                    });
             }
         });
     </script>
