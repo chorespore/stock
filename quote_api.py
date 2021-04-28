@@ -30,14 +30,15 @@ def stock():
     if keyword is None:
         res = dao.names.find({})
     else:
-        res = dao.names.find({"$or": [{'symbol': {'$regex': keyword}}, {'name': {'$regex': keyword}}]})
+        res = dao.names.find({'keyword': {'$regex': keyword.lower()}})
     for i in res:
         del i['_id']
+        del i['keyword']
         data.append(i)
     return json_util.dumps(data)
 
 
-@app.route('/listAll', methods=['GET'])
+@ app.route('/listAll', methods=['GET'])
 def listAll():
     data = []
     res = dao.names.find({}).sort('symbol', 1)
@@ -47,7 +48,7 @@ def listAll():
     return json_util.dumps(data)
 
 
-@app.route('/student', methods=['POST'])
+@ app.route('/student', methods=['POST'])
 def add_stu():
     if not request.data:  # 检测是否有数据
         return ('fail')
