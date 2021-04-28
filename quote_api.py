@@ -10,7 +10,7 @@ cors = CORS(app)
 
 @app.route('/')
 def hello_world():
-    return 'Hello World'
+    return 'Hello Flask'
 
 
 @app.route('/quote/<symbol>', methods=['GET'])
@@ -41,7 +41,7 @@ def listAll():
     return json_util.dumps(data)
 
 
-@app.route('/student', methods=['POST', 'GET'])
+@app.route('/student', methods=['POST'])
 def add_stu():
     if not request.data:  # 检测是否有数据
         return ('fail')
