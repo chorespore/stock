@@ -1,12 +1,16 @@
-<!--
-    THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=candlestick-sh-2015
--->
 <!DOCTYPE html>
 <html>
 
 <head>
     <meta charset="utf-8">
     <title>Quotes</title>
+    <script type="text/javascript" src="./modules/echarts.min.js"></script>
+    <script type="text/javascript" src="./modules/axios.min.js"></script>
+    <script type="text/javascript" src="./modules/vue.min.js"></script>
+
+    <!-- <script type="text/javascript" src="https://unpkg.com/browse/vue@2.6.12/dist/vue.min.js"></script> -->
+    <!-- <script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
+    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script> -->
     <style>
         @import url(candlestick.css);
     </style>
@@ -17,6 +21,7 @@
         <div id="app" class="stock-list">
             <input v-model="keyword" class="keyword-input" @keyup="search(keyword)" />
             <div class="stock-row" v-for="stock in stocks" v-on:click="press(stock['symbol'])">
+                <!-- <button class="button4">{{stock["symbol"]}}</button> -->
                 {{stock["symbol"]}}
             </div>
         </div>
@@ -26,13 +31,7 @@
         <div id="container" style="height: 100%"></div>
     </div>
 
-    <script type="text/javascript" src="./modules/echarts.min.js"></script>
-    <script type="text/javascript" src="./modules/axios.min.js"></script>
-    <script type="text/javascript" src="./modules/vue.min.js"></script>
 
-    <!-- <script type="text/javascript" src="https://unpkg.com/browse/vue@2.6.12/dist/vue.min.js"></script> -->
-    <!-- <script type="text/javascript" src="https://unpkg.com/axios/dist/axios.min.js"></script> -->
-    <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script> -->
 
     <script type="text/javascript">
         var dom = document.getElementById("container");
@@ -153,26 +152,26 @@
                     //         borderColor0: '#0CF49B'
                     //     }
                     // },
-                    {
-                        name: 'MA5',
-                        type: 'line',
-                        data: calculateMA(5, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
-                        name: 'MA10',
-                        type: 'line',
-                        data: calculateMA(10, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
+                    // {
+                    //     name: 'MA5',
+                    //     type: 'line',
+                    //     data: calculateMA(5, data),
+                    //     smooth: true,
+                    //     showSymbol: false,
+                    //     lineStyle: {
+                    //         width: 1
+                    //     }
+                    // },
+                    // {
+                    //     name: 'MA10',
+                    //     type: 'line',
+                    //     data: calculateMA(10, data),
+                    //     smooth: true,
+                    //     showSymbol: false,
+                    //     lineStyle: {
+                    //         width: 1
+                    //     }
+                    // },
                     // {
                     //     name: 'MA20',
                     //     type: 'line',
@@ -183,16 +182,16 @@
                     //         width: 1
                     //     }
                     // },
-                    // {
-                    //     name: 'MA30',
-                    //     type: 'line',
-                    //     data: calculateMA(30, data),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1
-                    //     }
-                    // }
+                    {
+                        name: 'MA30',
+                        type: 'line',
+                        data: calculateMA(30, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    }
                 ]
             };
 
