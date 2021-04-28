@@ -16,7 +16,7 @@
     <div class="sidebar">
         <div id="app" class="stock-list">
             <input v-model="keyword" class="keyword-input" @keyup.enter="search(keyword)" />
-            <div class="stock-row" v-for="stock in stocks" v-on:click="keyword=press(keyword,stock['symbol'])">
+            <div class="stock-row" v-for="stock in stocks" v-on:click="press(stock['symbol'])">
                 {{stock["symbol"]}}
             </div>
         </div>
@@ -144,25 +144,15 @@
                     type: 'inside'
                 }],
                 series: [
-                    {
-                        type: 'candlestick',
-                        name: '日K',
-                        data: data,
-                        itemStyle: {
-                            color: '#FD1050',
-                            color0: '#0CF49B',
-                            borderColor: '#FD1050',
-                            borderColor0: '#0CF49B'
-                        }
-                    },
                     // {
-                    //     name: 'MA3',
-                    //     type: 'line',
-                    //     data: calculateMA(1, data),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1
+                    //     type: 'candlestick',
+                    //     name: '日K',
+                    //     data: data,
+                    //     itemStyle: {
+                    //         color: '#FD1050',
+                    //         color0: '#0CF49B',
+                    //         borderColor: '#FD1050',
+                    //         borderColor0: '#0CF49B'
                     //     }
                     // },
                     {
@@ -185,26 +175,26 @@
                             width: 1
                         }
                     },
-                    {
-                        name: 'MA20',
-                        type: 'line',
-                        data: calculateMA(20, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1
-                        }
-                    },
-                    {
-                        name: 'MA30',
-                        type: 'line',
-                        data: calculateMA(30, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1
-                        }
-                    }
+                    // {
+                    //     name: 'MA20',
+                    //     type: 'line',
+                    //     data: calculateMA(20, data),
+                    //     smooth: true,
+                    //     showSymbol: false,
+                    //     lineStyle: {
+                    //         width: 1
+                    //     }
+                    // },
+                    // {
+                    //     name: 'MA30',
+                    //     type: 'line',
+                    //     data: calculateMA(30, data),
+                    //     smooth: true,
+                    //     showSymbol: false,
+                    //     lineStyle: {
+                    //         width: 1
+                    //     }
+                    // }
                 ]
             };
 
@@ -216,23 +206,20 @@
         new Vue({
             el: "#app",
             methods: {
-                press(keyword, key) {
-                    if (key == "=") {
-                        console.log(eval(keyword));
-                        keyword = eval(keyword).toString();
-                    } else if (key == "AC") {
-                        keyword = "";
-                    } else if (key == "<") {
-                        keyword = keyword.substring(0, keyword.length - 1);
-                    } else {
-                        keyword = keyword + key;
-                    }
-                    keyword = key
-                    getQuote(keyword)
-                    return keyword;
+                press(key) {
+                    getQuote(key)
                 },
                 search(keyword) {
-                    getQuote(keyword)
+                    axios
+                        .get("http://localhost:8086/stock", {
+                            params: { 'keyword': keyword }
+                        })
+                        .then(response => {
+                            this.stocks = response.data
+                        })
+                        .catch(function (error) {
+                            console.log(error);
+                        });
                 }
             },
             data: {

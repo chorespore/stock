@@ -22,11 +22,17 @@ def quote(symbol):
     return json_util.dumps(data)
 
 
-@app.route('/stock/<keyword>', methods=['GET'])
-def stock(keyword):
+@app.route('/stock', methods=['GET'])
+def stock():
+    res = None
     data = []
-    res = dao.names.find({'symbol': keyword})
+    keyword = request.args.get('keyword')
+    if keyword is None:
+        res = dao.names.find({})
+    else:
+        res = dao.names.find({"$or": [{'symbol': {'$regex': keyword}}, {'name': {'$regex': keyword}}]})
     for i in res:
+        del i['_id']
         data.append(i)
     return json_util.dumps(data)
 
