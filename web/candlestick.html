@@ -15,14 +15,12 @@
 <body style="height: 100%; margin: 0">
     <div class="sidebar">
         <div id="app" class="stock-list">
-            <input v-model="keyword" class="keyword-input" @keyup.enter="search(keyword)" />
+            <input v-model="keyword" class="keyword-input" @keyup="search(keyword)" />
             <div class="stock-row" v-for="stock in stocks" v-on:click="press(stock['symbol'])">
                 {{stock["symbol"]}}
             </div>
         </div>
     </div>
-
-
 
     <div class="stock-diagram">
         <div id="container" style="height: 100%"></div>
@@ -210,19 +208,23 @@
                     getQuote(key)
                 },
                 search(keyword) {
-                    axios
-                        .get("http://localhost:8086/stock", {
-                            params: { 'keyword': keyword }
-                        })
-                        .then(response => {
-                            this.stocks = response.data
-                        })
-                        .catch(function (error) {
-                            console.log(error);
-                        });
+                    clearTimeout(this.keywordTimer)
+                    this.keywordTimer = setTimeout(() => {
+                        axios
+                            .get("http://localhost:8086/stock", {
+                                params: { 'keyword': keyword }
+                            })
+                            .then(response => {
+                                this.stocks = response.data
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
+                    }, 250);
                 }
             },
             data: {
+                keywordTimer: null,
                 keyword: "",
                 stocks: [],
                 buttonStyles: {
