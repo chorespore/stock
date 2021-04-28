@@ -1,0 +1,64 @@
+.panel-layer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1;
+}
+
+.side-bar {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    bottom: 0px;
+    z-index: 2;
+    overflow: auto;
+    width: 300px;
+    text-align: center;
+    background: #ffffff;
+    border: 1px solid #dedede;
+    -webkit-box-shadow: -4px 0 11px 0 rgba(0, 0, 0, 0.14);
+    box-shadow: -4px 0 11px 0 rgba(0, 0, 0, 0.14);
+    border-radius: 8px 8px 8px 8px;
+
+    -webkit-transition: right .3s;
+    -o-transition: right .3s;
+    transition: right .3s;
+}
+
+.panel-wrap.animated {
+    right: 0;
+    -webkit-transition: right .3s;
+    -o-transition: right .3s;
+    transition: right .3s;
+}
+
+.stock-diagram {
+    position: fixed;
+    top: 0px;
+    left: 300px;
+    right: 0px;
+    bottom: 0px;
+    z-index: 2;
+    overflow: auto;
+    background: #ffffff;
+    border: 1px solid #dedede;
+    border-radius: 0px 0px 0px 0px;
+    -webkit-transition: right .3s;
+    -o-transition: right .3s;
+    transition: right .3s;
+}
+
+.stock-row {
+    z-index: 2;
+    overflow: auto;
+    background: #ffffff;
+    height: 32px;
+    text-align: center;
+    border: 1px solid #dedede;
+    border-radius: 0px 0px 0px 0px;
+    -webkit-transition: right .3s;
+    -o-transition: right .3s;
+    transition: right .3s;
+}

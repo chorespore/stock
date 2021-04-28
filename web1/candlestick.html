@@ -2,80 +2,17 @@
     THIS EXAMPLE WAS DOWNLOADED FROM https://echarts.apache.org/examples/zh/editor.html?c=candlestick-sh-2015
 -->
 <!DOCTYPE html>
-<html style="height: 100%">
+<html>
 
 <head>
     <meta charset="utf-8">
     <title>Quotes</title>
-    <style type="text/css">
-        .panel-layer {
-            position: fixed;
-            top: 0;
-            right: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 1;
-        }
-
-        .side-bar {
-            position: fixed;
-            top: 0px;
-            left: 0px;
-            bottom: 0px;
-            z-index: 2;
-            overflow: auto;
-            width: 300px;
-            text-align: center;
-            background: #ffffff;
-            border: 1px solid #dedede;
-            -webkit-box-shadow: -4px 0 11px 0 rgba(0, 0, 0, 0.14);
-            box-shadow: -4px 0 11px 0 rgba(0, 0, 0, 0.14);
-            border-radius: 8px 8px 8px 8px;
-
-            -webkit-transition: right .3s;
-            -o-transition: right .3s;
-            transition: right .3s;
-        }
-
-        .panel-wrap.animated {
-            right: 0;
-            -webkit-transition: right .3s;
-            -o-transition: right .3s;
-            transition: right .3s;
-        }
-
-        .stock-diagram {
-            position: fixed;
-            top: 0px;
-            left: 300px;
-            right: 0px;
-            bottom: 0px;
-            z-index: 2;
-            overflow: auto;
-            background: #ffffff;
-            border: 1px solid #dedede;
-            border-radius: 0px 0px 0px 0px;
-            -webkit-transition: right .3s;
-            -o-transition: right .3s;
-            transition: right .3s;
-        }
-
-        .stock-row {
-            z-index: 2;
-            overflow: auto;
-            background: #ffffff;
-            height: 32px;
-            text-align: center;
-            border: 1px solid #dedede;
-            border-radius: 0px 0px 0px 0px;
-            -webkit-transition: right .3s;
-            -o-transition: right .3s;
-            transition: right .3s;
-        }
+    <style>
+        @import url(candlestick.css);
     </style>
 </head>
 
-<body style="height: 80%; margin: 0">
+<body style="height: 100%; margin: 0">
 
     <div id="app" class="side-bar">
         <input v-model="expression" v-bind:style="inputStyles" />
@@ -97,7 +34,6 @@
     <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.min.js"></script> -->
 
     <script type="text/javascript">
-
         var dom = document.getElementById("container");
         var myChart = echarts.init(dom);
         var app = {};
@@ -309,19 +245,6 @@
                     height: "64px",
                     fontSize: "24px",
                     margin: "1px 6px"
-                },
-                sideBarStyles: {
-                    position: "absolute",
-                    textAlign: "center",
-                    left: "4px",
-                    top: "4px",
-                    bottom: "4px",
-                    width: "300px",
-                    borderRadius: "20px",
-                    backgroundColor: "#ccc",
-                },
-                rowStyles: {
-                    margin: "8px"
                 },
                 inputStyles: {
                     outlineStyle: "none",
