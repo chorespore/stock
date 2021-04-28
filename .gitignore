@@ -134,3 +134,6 @@ dmypy.json
 /allstock
 
 /docker-compose/data
+
+#Web
+node_modules/
