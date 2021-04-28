@@ -14,12 +14,29 @@ def hello_world():
 
 
 @app.route('/quote/<symbol>', methods=['GET'])
-def data(symbol):
+def quote(symbol):
     data = []
     res = dao.quotes.find({'symbol': symbol}).sort('date', 1)
     for i in res:
         data.append(i)
-    print(data)
+    return json_util.dumps(data)
+
+
+@app.route('/stock/<keyword>', methods=['GET'])
+def stock(keyword):
+    data = []
+    res = dao.names.find({'symbol': keyword})
+    for i in res:
+        data.append(i)
+    return json_util.dumps(data)
+
+
+@app.route('/listAll', methods=['GET'])
+def listAll():
+    data = []
+    res = dao.names.find({})
+    for i in res:
+        data.append(i)
     return json_util.dumps(data)
 
 
