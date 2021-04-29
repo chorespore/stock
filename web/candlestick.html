@@ -22,7 +22,7 @@
             <input v-model="keyword" class="keyword-input" @keyup="search(keyword)" />
             <div class="stock-row" v-for="stock in stocks" v-on:click="press(stock['symbol'])">
                 <!-- <button class="button4">{{stock["symbol"]}}</button> -->
-                {{stock["symbol"]}}
+                {{stock["symbol"]}} {{stock["name"]}}
             </div>
         </div>
     </div>
@@ -152,26 +152,36 @@
                     //         borderColor0: '#0CF49B'
                     //     }
                     // },
-                    // {
-                    //     name: 'MA5',
-                    //     type: 'line',
-                    //     data: calculateMA(5, data),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1
-                    //     }
-                    // },
-                    // {
-                    //     name: 'MA10',
-                    //     type: 'line',
-                    //     data: calculateMA(10, data),
-                    //     smooth: true,
-                    //     showSymbol: false,
-                    //     lineStyle: {
-                    //         width: 1
-                    //     }
-                    // },
+                    {
+                        name: '日K',
+                        type: 'line',
+                        data: calculateMA(1, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: 'MA5',
+                        type: 'line',
+                        data: calculateMA(5, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
+                    {
+                        name: 'MA10',
+                        type: 'line',
+                        data: calculateMA(10, data),
+                        smooth: true,
+                        showSymbol: false,
+                        lineStyle: {
+                            width: 1
+                        }
+                    },
                     // {
                     //     name: 'MA20',
                     //     type: 'line',
@@ -182,16 +192,16 @@
                     //         width: 1
                     //     }
                     // },
-                    {
-                        name: 'MA30',
-                        type: 'line',
-                        data: calculateMA(30, data),
-                        smooth: true,
-                        showSymbol: false,
-                        lineStyle: {
-                            width: 1
-                        }
-                    }
+                    // {
+                    //     name: 'MA30',
+                    //     type: 'line',
+                    //     data: calculateMA(30, data),
+                    //     smooth: true,
+                    //     showSymbol: false,
+                    //     lineStyle: {
+                    //         width: 1
+                    //     }
+                    // }
                 ]
             };
 

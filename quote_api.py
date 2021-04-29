@@ -30,7 +30,7 @@ def stock():
     if keyword is None:
         res = dao.names.find({})
     else:
-        res = dao.names.find({'keyword': {'$regex': keyword.lower()}})
+        res = dao.names.find({'keyword': {'$regex': keyword.lower()}}).sort('symbol', 1)
     for i in res:
         del i['_id']
         del i['keyword']
