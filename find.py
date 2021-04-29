@@ -1,29 +1,27 @@
+import dao
 import pymongo
 import datetime
 import numpy as np
 from matplotlib import pyplot as plt
-# pip3 install matplotlib
 
 start = "2018-01-01"
 PERIOD = 250
-COMMISSION=2.5/10000
+COMMISSION = 2.5 / 10000
 
 principal = 100.0
 
 x = np.arange(0, PERIOD)
 y = []
 
-client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
-db = client["stock"]
-priceColl = db["price"]
-nameColl = db["name"]
+quoteDao = dao.quotes
+nameDao = dao.names
 
 display = {"symbol": 1, "date": 1, "change_rate": 1}
 
 
 def pick(date):
-    query = {"date": date, "change_rate": {"$gt": 9.9,"$lt": 1000.5}}
-    res = priceColl.find(query).skip(0).limit(10).sort('change_rate', -1)
+    query = {"date": date, "change_rate": {"$gt": 9.9, "$lt": 1000.5}}
+    res = quoteDao.find(query).skip(0).limit(10).sort('change_rate', -1)
     return res[0]
 
 
@@ -32,21 +30,21 @@ def calc(start, period):
     if(period > 0):
         prePrice = pick(preTradingDay(start))
         symbol = prePrice['symbol']
-        todayPrice = priceColl.find_one({'symbol': symbol, 'date': start})
-        nextPrice = priceColl.find_one({'symbol': symbol, 'date': nextTradingDay(start)})
-        if(todayPrice==None or nextPrice==None):
+        todayPrice = quoteDao.find_one({'symbol': symbol, 'date': start})
+        nextPrice = quoteDao.find_one({'symbol': symbol, 'date': nextTradingDay(start)})
+        if(todayPrice is None or nextPrice is None):
             print('-----------------------------------------------------')
-            y.append(principal/100)
-            calc(nextTradingDay(start), period-1)
+            y.append(principal / 100)
+            calc(nextTradingDay(start), period - 1)
             return
-        principal = principal*(1-COMMISSION)/todayPrice['open']*nextPrice['close']
-        y.append(principal/100)
-        name='一一一一'
-        nameRes = nameColl.find_one({'symbol': symbol})
-        if(nameRes!=None):
-            name=nameRes['name']
+        principal = principal * (1 - COMMISSION) / todayPrice['open'] * nextPrice['close']
+        y.append(principal / 100)
+        name = '一一一一'
+        nameRes = nameDao.find_one({'symbol': symbol})
+        if(nameRes is not None):
+            name = nameRes['name']
 
-        print(PERIOD-period, end='\t')
+        print(PERIOD - period, end='\t')
         print(name.ljust(6, ' '), end='\t')
         print(todayPrice['date'], end='\t')
         print(format(prePrice['change_rate'], '.2f'), end='\t')
@@ -54,30 +52,32 @@ def calc(start, period):
         print(format(nextPrice['change_rate'], '.2f'), end='\t')
         print(format(principal, '.2f'))
 
-        calc(nextTradingDay(start), period-1)
+        calc(nextTradingDay(start), period - 1)
     else:
-        print('\nEarnings of', PERIOD, 'days:',format(principal/100-1, '.2f'), 'times')
+        print('\nEarnings of', PERIOD, 'days:', format(principal / 100 - 1, '.2f'), 'times')
         draw()
 
-def getTradingDays(start,period):
-    tradingDays=[]
+
+def getTradingDays(start, period):
+    tradingDays = []
     for i in range(period):
-        day=nextTradingDay(start)
+        day = nextTradingDay(start)
         tradingDays.append(day)
-        start=day
+        start = day
     return tradingDays
+
 
 def getDay(today, offset):
     today = datetime.datetime.strptime(today, '%Y-%m-%d').date()
     span = datetime.timedelta(days=offset)
-    res = str(today+span)
+    res = str(today + span)
     return res
 
 
 def preTradingDay(today):
     for i in range(1, 90):
         target = getDay(today, -i)
-        count = priceColl.count_documents({"date": target})
+        count = quoteDao.count_documents({"date": target})
         if(count > 0):
             return target
 
@@ -85,7 +85,7 @@ def preTradingDay(today):
 def nextTradingDay(today):
     for i in range(1, 90):
         target = getDay(today, i)
-        count = priceColl.count_documents({"date": target})
+        count = quoteDao.count_documents({"date": target})
         if(count > 0):
             return target
 
@@ -97,12 +97,14 @@ def draw():
     plt.plot(x, y)
     plt.show()
 
-def draw(x,y):
+
+def draw(x, y):
     plt.title("Retrospective Diagram")
     plt.xlabel("Days")
     plt.ylabel("Count")
     plt.plot(x, y)
     plt.show()
+
 
 if __name__ == '__main__':
     calc(nextTradingDay(start), PERIOD)

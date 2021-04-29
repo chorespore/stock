@@ -9,9 +9,9 @@ PERIOD = 500
 
 def getLimitedCount(date):
     query = {"date": date, "change_rate": {"$gt": 9.9, '$lt': 10.9}}
-    resA = find.priceColl.count_documents(query)
+    resA = find.quoteDao.count_documents(query)
     query = {"date": date, "change_rate": {"$gt": 9.0, '$lt': 10.9}}
-    resB = find.priceColl.count_documents(query)
+    resB = find.quoteDao.count_documents(query)
     print(date, resA, resB, format(resA*100/resB, '.2f')+'%')
     return resA
 

@@ -15,7 +15,7 @@ y = [0.0]*LIMIT_SPAN
 def getTopSet(date):
     # query = {"date": date, "change_rate": {"$gt": 9.5, '$lt': 10.9}}
     query = {"date": date, "change_rate": {'$lt': 10.9}}
-    res = find.priceColl.find(query).limit(100).sort('change_rate', -1)
+    res = find.quoteDao.find(query).limit(100).sort('change_rate', -1)
     pool=set()
     for i in res:
         pool.add(i['symbol'])
