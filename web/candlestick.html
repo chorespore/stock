@@ -21,7 +21,6 @@
         <div id="app" class="stock-list">
             <input v-model="keyword" class="keyword-input" @keyup="search(keyword)" />
             <div class="stock-row" v-for="stock in stocks" v-on:click="press(stock['symbol'])">
-                <!-- <button class="button4">{{stock["symbol"]}}</button> -->
                 {{stock["symbol"]}} {{stock["name"]}}
             </div>
         </div>

@@ -1,23 +1,14 @@
-.panel-layer {
-    position: fixed;
-    top: 0;
-    right: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1;
-}
-
-.sidebar{
+/* .sidebar{
     border: 1px solid #dedede;
     -webkit-box-shadow: -4px 0 11px 0 rgba(0, 0, 0, 0.14);
     box-shadow: -4px 0 11px 0 rgba(0, 0, 0, 0.14);
     border-radius: 8px 8px 8px 8px;
-}
+} */
 
 .stock-list {
     position: fixed;
-    top: 70px;
-    left: 0px;
+    top: 64px;
+    left: 0;
     bottom: 0px;
     z-index: 2;
     overflow: auto;
@@ -34,28 +25,28 @@
     transition: right .3s; */
 }
 
-
-.panel-wrap.animated {
-    right: 0;
-    -webkit-transition: right .3s;
-    -o-transition: right .3s;
-    transition: right .3s;
-}
-
 .stock-diagram {
     position: fixed;
     top: 0px;
-    left: 300px;
+    left: 320px;
     right: 0px;
     bottom: 0px;
     z-index: 2;
     overflow: auto;
     background: #ffffff;
-    /* border: 1px solid #dedede; */
-    border-radius: 0px 0px 0px 0px;
-    -webkit-transition: right .3s;
-    -o-transition: right .3s;
-    transition: right .3s;
+}
+
+.keyword-input{
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    outline-style:none;
+    border: 1px solid #ccc;
+    border-radius: 32px;
+    padding: 8px 8px;
+    margin: 16px 0 0 16px;
+    width: 250px;
+    font-size: 16px;
 }
 
 .stock-row {
@@ -64,28 +55,17 @@
     overflow: auto;
     background: #ffffff;
     height: 32px;
-    padding-top: 16px;
+    line-height: 32px;
     text-align: center;
-    /* border: 1px solid #dedede; */
-    border-radius: 0px 0px 0px 0px;
+    margin-right: 8px;
+    border-radius: 0px 16px 16px 0px;
+}
+
+.stock-row:hover {
+    background-color: #e7e7e7;
     /* -webkit-transition-duration: 0.4s; 
     transition-duration: 0.4s; */
 }
-
-.keyword-input{
-    position: fixed;
-    top: 0px;
-    left: 16px;
-    outline-style:none;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px 8px;
-    margin: 16px 0 8px 0;
-    width: 250px;
-    font-size: 18px;
-}
-
-.stock-row:hover {background-color: #e7e7e7;}
 .stock-row:active {
     box-shadow: 0 1px rgb(200, 200, 200);
     transform: translateY(1px);
