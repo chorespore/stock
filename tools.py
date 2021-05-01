@@ -21,7 +21,7 @@ def saveJson(data, filePath, log=True):
 
 def saveCSV(data, filePath, log=True):
     df = pd.DataFrame.from_dict(data)
-    df.to_csv(filePath, encoding="utf_8_sig")
+    df.to_csv(filePath, index=False, encoding="utf_8_sig")
     if(log == True):
         print(len(data), 'items saved as CSV')
 

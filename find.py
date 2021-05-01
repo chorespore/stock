@@ -1,16 +1,15 @@
 import dao
 import pymongo
 import datetime
-import numpy as np
 from matplotlib import pyplot as plt
 
 start = "2018-01-01"
-PERIOD = 250
+PERIOD = 10
 COMMISSION = 2.5 / 10000
 
 principal = 100.0
 
-x = np.arange(0, PERIOD)
+x = range(PERIOD)
 y = []
 
 quoteDao = dao.quotes
@@ -55,7 +54,7 @@ def calc(start, period):
         calc(nextTradingDay(start), period - 1)
     else:
         print('\nEarnings of', PERIOD, 'days:', format(principal / 100 - 1, '.2f'), 'times')
-        draw()
+        drawEx()
 
 
 def getTradingDays(start, period):
@@ -90,7 +89,7 @@ def nextTradingDay(today):
             return target
 
 
-def draw():
+def drawEx():
     plt.title("Retrospective Diagram")
     plt.xlabel("Days")
     plt.ylabel("Returns")
