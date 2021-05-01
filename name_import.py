@@ -1,3 +1,4 @@
+import dao
 import time
 import json
 import requests
@@ -7,10 +8,7 @@ import snowball
 import pandas as pd
 from pypinyin import lazy_pinyin
 
-
-client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
-db = client["stock"]
-nameColl = db["name"]
+nameColl = dao.names
 
 
 def importData(data):

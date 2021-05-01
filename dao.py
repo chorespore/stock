@@ -1,6 +1,6 @@
 import pymongo
 
-client = pymongo.MongoClient(host='mongodb://localhost', username='chao', password='mongo2020')
+client = pymongo.MongoClient(host='mongodb://working.chao.com', username='chao', password='mongo2020')
 db = client["stock"]
 quotes = db["price"]
 names = db["name"]

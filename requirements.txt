@@ -6,5 +6,6 @@ requests
 flask-cors
 bson
 pypinyin
+pandas
 
 
