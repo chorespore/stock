@@ -37,7 +37,7 @@ def genKeyword(symbol, name):
     for i in arr:
         abbr = abbr + i[0].lower()
         full = full + i.lower()
-    return abbr + '-' + full + '-' + symbol.lower()
+    return abbr + '-' + full + '-' + name.lower() + '-' + symbol.lower()
 
 
 def updataSymbol():
