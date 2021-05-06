@@ -1,16 +1,11 @@
 import dao
+import find
 from pypinyin import lazy_pinyin
 
 
 def go():
-    arr = lazy_pinyin('N聪明')
-    res = ''
-    abbr = ''
-    for i in arr:
-        abbr = abbr + i[0].lower()
-        res = res + i.lower()
-
-    print(genKeyword('N聪明', 'SH002'))
+    res = find.getTradingDay('2021-02-01', 5)
+    print(res)
 
 
 def genKeyword(symbol, name):

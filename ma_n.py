@@ -106,6 +106,10 @@ def goAll():
     return res
 
 
+def searchDay(day):
+    quoteDao.find({'date': day})
+
+
 if __name__ == '__main__':
     arr = goAll()
     avg = sum(arr) / len(arr)

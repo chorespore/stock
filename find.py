@@ -89,6 +89,16 @@ def nextTradingDay(today):
             return target
 
 
+def getTradingDay(today, offset):
+    if offset >= 0:
+        for i in range(offset):
+            today = nextTradingDay(today)
+    else:
+        for i in range(-offset):
+            today = preTradingDay(today)
+    return today
+
+
 def drawEx():
     plt.title("Retrospective Diagram")
     plt.xlabel("Days")
