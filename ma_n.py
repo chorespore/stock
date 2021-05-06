@@ -102,16 +102,32 @@ def goAll():
     #     dayItem = {'date': key, 'number': len(value)}
     #     dayData.append(dayItem)
     # tools.saveCSV(dayData, './snowball/ma5-cnt.csv')
-
+    avg = sum(res) / len(res)
+    print('Average Earnings:', format(avg / 100, '0.2f'), 'times')
     return res
 
 
-def searchDay(day):
-    quoteDao.find({'date': day})
+def searchDay(today):
+    res = []
+    MA_N = 6
+    days = []
+    for i in range(1, MA_N + 1):
+        days.append(find.getTradingDay(today, -i))
+    print(days)
+    for i in quoteDao.find({'date': today}):
+        preDays = []
+        for j in quoteDao.find({'symbol': i['symbol'], 'date': {'$in': days}}).sort('date', -1):
+            preDays.append(j['close'])
+        if(len(preDays) < 5):
+            continue
+        avg = sum(preDays) / len(preDays)
+        if(preDays[0] < avg and i['close'] > avg):
+            nextDay = quoteDao.find_one({'symbol': i['symbol'], 'date': find.nextTradingDay(today)})
+            item = {'symbol': i['symbol'], 'ma': avg, 'pre_close1': i['pre_close'], 'close': i['close'], 'nextDay': nextDay['close'], 'earnings': nextDay['close'] / i['close'] * 100 - 100}
+            print(item)
+            res.append(item)
+    tools.saveCSV(res, './snowball/searchDay.csv')
 
 
 if __name__ == '__main__':
-    arr = goAll()
-    avg = sum(arr) / len(arr)
-    print('Average Earnings:', format(avg / 100, '0.2f'), 'times')
-    # goOne('SZ300390')
+    searchDay(find.nextTradingDay('2020-07-01'))
