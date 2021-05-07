@@ -69,9 +69,9 @@ def goOne(symbol):
             highSum = highSum + serie[i + 1]['high']
             # print(cnt, serie[i]['date'], serie[i]['close'], format(principal, '0.2f'))
             # print(serie)
-            y.append(principal)
+            # y.append(principal)
     # print('Earnings:', principal)
-    find.draw(range(len(y)), y)
+    # find.draw(range(len(y)), y)
     # print(highSum, closeSum)
     return principal, cnt, highSum / closeSum
 
@@ -93,7 +93,7 @@ def goAll():
             item = {'name': stock['name'], 'symbol': stock['symbol'], 'earning': format(p, '0.2f'), 'pass': passCnt, 'days': days}
             data.append(item)
         stop = stop + 1
-        if stop > 1000:
+        if stop > 5000:
             break
     tools.saveCSV(data, './snowball/ma5.csv')
 
@@ -113,7 +113,7 @@ def searchDay(today):
     days = []
     for i in range(1, MA_N + 1):
         days.append(find.getTradingDay(today, -i))
-    print(days)
+    # print(days)
     for i in quoteDao.find({'date': today}):
         preDays = []
         for j in quoteDao.find({'symbol': i['symbol'], 'date': {'$in': days}}).sort('date', -1):
@@ -127,23 +127,37 @@ def searchDay(today):
                 pe = 999
                 if i.__contains__('pe_ttm'):
                     pe = i['pe_ttm']
-                if pe > 0 and pe < 50:
-                    item = {'symbol': i['symbol'], 'ma': avg, 'pe_ttm': pe, 'close': i['close'], 'nextDay': nextDay['close'], 'earnings': nextDay['close'] / i['close'] * 100 - 100}
-                else:
-                    continue
+                # if pe > 0 and pe < 50:
+                item = {'symbol': i['symbol'], 'ma': avg, 'pe_ttm': pe, 'close': i['close'], 'nextDay': nextDay['close'], 'earnings': nextDay['close'] / i['close'] * 100 - 100}
             else:
                 continue
             # print(item)
             res.append(item)
-    res.sort(key=lambda x: x['pe_ttm'])
-    res = res[:10]
-    tools.saveCSV(res[:10], './snowball/searchDay.csv')
+    # res.sort(key=lambda x: x['pe_ttm'])
+    # res = res[:20]
+    # tools.saveCSV(res[:10], './snowball/searchDay.csv')
     # print(res)
     return sum(list(map(lambda x: x['earnings'], res))) / len(res)
 
 
+def search():
+    P = 100
+    days = []
+    y = []
+    start = '2018-06-01'
+    for i in range(1, 250 + 1):
+        start = find.nextTradingDay(start)
+        days.append(start)
+        change = searchDay(start)
+        P = P * ((100 + change) / 100) * 9995 / 10000
+        print(i, change, P)
+        y.append(P)
+
+    find.draw(range(len(y)), y)
+
+
 if __name__ == '__main__':
-    # goAll()
-    e = searchDay(find.nextTradingDay('2020-05-19'))
-    print(e)
+    goAll()
+    # e = searchDay(find.nextTradingDay('2020-05-19'))
+    # print(e)
     # goOne('SZ300688')
