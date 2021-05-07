@@ -55,7 +55,7 @@ def goOne(symbol):
     cnt = 0
     passCnt = 0
     for i in range(1, len(serie) - 2):
-        if (serie[i - 1]['close'] < serie[i - 1]['ma5'] and serie[i]['close'] > serie[i]['ma5']):
+        if (serie[i - 1]['close'] < serie[i - 1]['ma5'] and serie[i]['close'] > serie[i]['ma5'] and serie[i]['close'] < serie[i]['high']):
             cnt = cnt + 1
             if(dayBoard.__contains__(serie[i]['date']) == False):
                 dayBoard[serie[i]['date']] = []
@@ -69,9 +69,9 @@ def goOne(symbol):
             highSum = highSum + serie[i + 1]['high']
             # print(cnt, serie[i]['date'], serie[i]['close'], format(principal, '0.2f'))
             # print(serie)
-            # y.append(principal)
+            y.append(principal)
     # print('Earnings:', principal)
-    # find.draw(range(len(y)), y)
+    find.draw(range(len(y)), y)
     # print(highSum, closeSum)
     return principal, cnt, highSum / closeSum
 
@@ -117,17 +117,33 @@ def searchDay(today):
     for i in quoteDao.find({'date': today}):
         preDays = []
         for j in quoteDao.find({'symbol': i['symbol'], 'date': {'$in': days}}).sort('date', -1):
-            preDays.append(j['close'])
+            preDays.append(j)
         if(len(preDays) < 5):
             continue
-        avg = sum(preDays) / len(preDays)
-        if(preDays[0] < avg and i['close'] > avg):
+        avg = sum(list(map(lambda x: x['close'], preDays))) / len(preDays)
+        if(preDays[0]['close'] < avg and i['close'] > avg and i['close'] < i['high']):
             nextDay = quoteDao.find_one({'symbol': i['symbol'], 'date': find.nextTradingDay(today)})
-            item = {'symbol': i['symbol'], 'ma': avg, 'pre_close1': i['pre_close'], 'close': i['close'], 'nextDay': nextDay['close'], 'earnings': nextDay['close'] / i['close'] * 100 - 100}
-            print(item)
+            if nextDay is not None:
+                pe = 999
+                if i.__contains__('pe_ttm'):
+                    pe = i['pe_ttm']
+                if pe > 0 and pe < 50:
+                    item = {'symbol': i['symbol'], 'ma': avg, 'pe_ttm': pe, 'close': i['close'], 'nextDay': nextDay['close'], 'earnings': nextDay['close'] / i['close'] * 100 - 100}
+                else:
+                    continue
+            else:
+                continue
+            # print(item)
             res.append(item)
-    tools.saveCSV(res, './snowball/searchDay.csv')
+    res.sort(key=lambda x: x['pe_ttm'])
+    res = res[:10]
+    tools.saveCSV(res[:10], './snowball/searchDay.csv')
+    # print(res)
+    return sum(list(map(lambda x: x['earnings'], res))) / len(res)
 
 
 if __name__ == '__main__':
-    searchDay(find.nextTradingDay('2020-07-01'))
+    # goAll()
+    e = searchDay(find.nextTradingDay('2020-05-19'))
+    print(e)
+    # goOne('SZ300688')
