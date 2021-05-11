@@ -4,9 +4,9 @@ from pypinyin import lazy_pinyin
 
 
 def go():
-    res = find.getTradingDay('2021-02-01', 5)
-    print(res)
-
+    a=[1,4,6,2]
+    a.sort()
+    print(a)
 
 def genKeyword(symbol, name):
     arr = lazy_pinyin(name)
