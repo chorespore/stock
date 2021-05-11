@@ -1,5 +1,4 @@
 import find
-import find
 import datetime
 from matplotlib import pyplot as plt
 

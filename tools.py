@@ -2,6 +2,19 @@ import os
 import json
 import time
 import pandas as pd
+from matplotlib import pyplot as plt
+
+
+def drawXY(x, y):
+    plt.title("Retrospective Diagram")
+    plt.xlabel("Days")
+    plt.ylabel("Count")
+    plt.plot(x, y)
+    plt.show()
+
+
+def drawY(y):
+    drawXY(range(len(y)), y)
 
 
 def loadJson(filename, log=True):
