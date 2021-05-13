@@ -17,3 +17,8 @@ def createIndex():
     for idx in indexes:
         print('Creating index of', idx)
         snowball.create_index([(idx, 1)])
+
+
+def deleteField():
+    for stock in snowball.find({}):
+        snowball.update({'_id': stock['_id']}, {'$unset': {'tick_size': 1, 'lot_size': 1, 'type': 1}})

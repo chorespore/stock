@@ -21,4 +21,5 @@ def genKeyword(symbol, name):
 
 
 if __name__ == '__main__':
-    go()
+    # go()
+    dao.deleteField()
