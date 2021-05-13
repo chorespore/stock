@@ -1,12 +1,14 @@
 import dao
 import find
+import fetch
+import datetime
 from pypinyin import lazy_pinyin
 
 
 def go():
-    a=[1,4,6,2]
-    a.sort()
-    print(a)
+    today = fetch.hasSaved()
+    print(today)
+
 
 def genKeyword(symbol, name):
     arr = lazy_pinyin(name)

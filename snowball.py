@@ -33,12 +33,24 @@ def fetch(save=False):
     return data
 
 
+def fetchOne():
+    url = PATTERN.format(1)
+    response = requests.get(url, headers=headers).json()
+    return response['data']['list']
+
+
 def normalize(data):
     for i in data:
         if(i.__contains__('has_follow')):
             del i['has_follow']
         if(i.__contains__('followers')):
             del i['followers']
+        if(i.__contains__('tick_size')):
+            del i['tick_size']
+        if(i.__contains__('lot_size')):
+            del i['lot_size']
+        if(i.__contains__('type')):
+            del i['type']
     return data
 
 

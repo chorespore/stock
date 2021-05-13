@@ -1,6 +1,7 @@
 import datetime
 import snowball
 import dao
+import find
 import eastmoney
 
 fieldMap = {'current': 'f2', 'percent': 'f3', 'change': 'f4', 'symbol': 'f12', 'name': 'f14',
@@ -8,6 +9,10 @@ fieldMap = {'current': 'f2', 'percent': 'f3', 'change': 'f4', 'symbol': 'f12', '
 
 
 def merge():
+    if hasSaved():
+        print('Data already exists')
+        return
+
     data = []
     snowDict, eastDict = dict(), dict()
     snowData = snowball.fetch()
@@ -35,6 +40,17 @@ def merge():
 
     snowball.saveJson(data)
     dao.importSnowball(data)
+
+
+def hasSaved():
+    latest = find.latestTradingDay()
+    res = snowball.fetchOne()
+    stock = res[0]
+    count = dao.snowball.count_documents({'symbol': stock['symbol'], 'date': latest, 'current': stock['current'], 'volume': stock['volume']})
+    if count > 0:
+        return True
+    else:
+        return False
 
 
 def importFromJson():

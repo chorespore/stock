@@ -14,6 +14,7 @@ y = []
 
 quoteDao = dao.quotes
 nameDao = dao.names
+snowballDao = dao.snowball
 
 display = {"symbol": 1, "date": 1, "change_rate": 1}
 
@@ -97,6 +98,15 @@ def getTradingDay(today, offset):
         for i in range(-offset):
             today = preTradingDay(today)
     return today
+
+
+def latestTradingDay():
+    today = str(datetime.datetime.now().date())
+    for i in range(0, 90):
+        target = getDay(today, -i)
+        count = snowballDao.count_documents({"date": target})
+        if(count > 0):
+            return target
 
 
 def drawEx():
