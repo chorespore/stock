@@ -10,7 +10,7 @@ fieldMap = {'current': 'f2', 'percent': 'f3', 'change': 'f4', 'symbol': 'f12', '
 
 def merge():
     if hasSaved():
-        print('Data already exists')
+        print('Data already exist')
         return
 
     data = []
