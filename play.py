@@ -1,7 +1,9 @@
 import dao
 import find
 import fetch
+import tools
 import datetime
+import numpy as np
 from pypinyin import lazy_pinyin
 
 
@@ -22,4 +24,7 @@ def genKeyword(symbol, name):
 
 if __name__ == '__main__':
     # go()
-    dao.deleteField()
+    # dao.deleteField()
+    data = tools.loadCSV('./snowball/stock_prices.csv')
+    res = np.array(data.iloc[2000:2010, 1])
+    print(res)

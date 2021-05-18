@@ -1,6 +1,8 @@
 import pandas_datareader.data as pdr
 import fix_yahoo_finance as fix
 import time
+import dao
+import tools
 fix.pdr_override()
 
 
@@ -58,6 +60,16 @@ def get_sp500(start_date, end_date):
     sp500_data.to_csv("sp500_data.csv")
 
 
+def getStock():
+    data = []
+    res = dao.quotes.find({'symbol': 'SZ000001'}, {'date': 1, 'close': 1}).sort('date', 1)
+    for stock in res:
+        item = {'date': stock['date'], 'close': stock['close']}
+        data.append(item)
+    tools.saveCSV(data, './snowball/stock_prices.csv')
+
+
 if __name__ == "__main__":
-    get_stock_data("AAPL", "2018-05-01", "2018-06-01")
+    # get_stock_data("AAPL", "2018-05-01", "2018-06-01")
     # get_sp500("2018-05-01", "2018-06-01")
+    getStock()

@@ -39,6 +39,12 @@ def saveCSV(data, filePath, log=True):
         print(len(data), 'items saved as CSV')
 
 
+def loadCSV(filePath):
+    with open(filePath, encoding='utf-8') as csvFile:
+        data = pd.read_csv(csvFile)
+        return data
+
+
 def showProgress(current, total, start):
     timeUsed = time.time() - start
     print('\rProgerss:', current, format(current * 100 / total, '.2f') + '%', end=' ')
