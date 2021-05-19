@@ -62,9 +62,9 @@ def get_sp500(start_date, end_date):
 
 def getStock():
     data = []
-    res = dao.quotes.find({'symbol': 'SZ000001'}, {'date': 1, 'close': 1}).sort('date', 1)
+    res = dao.quotes.find({'symbol': 'SZ000001'}, {'date': 1, 'change_rate': 1}).sort('date', 1)
     for stock in res:
-        item = {'date': stock['date'], 'close': stock['close']}
+        item = {'date': stock['date'], 'close': stock['change_rate']}
         data.append(item)
     tools.saveCSV(data, './snowball/stock_prices.csv')
 
