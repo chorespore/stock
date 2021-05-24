@@ -26,10 +26,10 @@ def train():
     X_test = (process.X_test.reshape((int(len(process.X_test))), 10, 1) + 10.1) / 20.2
     Y_test = (process.Y_test + 10.1) / 20.2
     model = tf.keras.Sequential()
+    # 通过input_length和input_dim这两个参数，可以直接确定张量的shape。
     model.add(tf.keras.layers.LSTM(20, input_shape=(10, 1), return_sequences=True))
     model.add(tf.keras.layers.LSTM(20))
     model.add(tf.keras.layers.Dense(1, activation=tf.nn.relu))
-
     model.compile(optimizer="adam", loss="mean_squared_error")
 
     # model.fit(X_train, Y_train, epochs=50)
