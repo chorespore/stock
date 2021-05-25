@@ -1,4 +1,5 @@
 import quandl
+import csv
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -10,7 +11,13 @@ from tensorflow.keras.layers import Dense, Dropout, LSTM
 
 start = date(2000, 10, 12)
 end = date.today()
-google_stock = pd.DataFrame(quandl.get("WIKI/GOOGL", start_date=start, end_date=end))
+# google_stock = pd.DataFrame(quandl.get("WIKI/GOOGL", start_date=start, end_date=end))
+tmp_lst = []
+with open('./allstock/000001.SZ.csv', 'r', encoding='utf-8') as f:
+    reader = csv.reader(f)
+    for row in reader:
+        tmp_lst.append(row)
+google_stock = pd.DataFrame(tmp_lst[1:], columns=tmp_lst[0])
 print(google_stock.shape)
 google_stock.tail()
 google_stock.head()
@@ -19,7 +26,8 @@ google_stock.head()
 time_stamp = 50
 
 # 划分训练集与验证集
-google_stock = google_stock[['Open', 'High', 'Low', 'Close', 'Volume']]  # 'Volume'
+# google_stock = google_stock[['Open', 'High', 'Low', 'Close', 'Volume']]
+google_stock = google_stock[['开盘价', '最高价', '最低价', '收盘价', '成交额(千元)']]
 train = google_stock[0:2800 + time_stamp]
 valid = google_stock[2800 - time_stamp:]
 
@@ -46,37 +54,49 @@ for i in range(time_stamp, len(valid)):
 x_valid, y_valid = np.array(x_valid), np.array(y_valid)
 
 
-# 超参数
-epochs = 3
-batch_size = 16
-# LSTM 参数: return_sequences=True LSTM输出为一个序列。默认为False，输出一个值。
-# input_dim： 输入单个样本特征值的维度
-# input_length： 输入的时间点长度
-model = tf.keras.Sequential()
-model.add(LSTM(units=100, return_sequences=True, input_dim=x_train.shape[-1], input_length=x_train.shape[1]))
-model.add(LSTM(units=50))
-model.add(Dense(1))
-model.compile(loss='mean_squared_error', optimizer='adam')
-model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, verbose=1)
+def train():
+    # 超参数
+    epochs = 3
+    batch_size = 16
+    # LSTM 参数: return_sequences=True LSTM输出为一个序列。默认为False，输出一个值。
+    # input_dim： 输入单个样本特征值的维度
+    # input_length： 输入的时间点长度
+    model = tf.keras.Sequential()
+    model.add(LSTM(units=100, return_sequences=True, input_dim=x_train.shape[-1], input_length=x_train.shape[1]))
+    model.add(LSTM(units=50))
+    model.add(Dense(1))
+    model.compile(loss='mean_squared_error', optimizer='adam')
+    model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, verbose=1)
+    model.save('./snowball/model_LSTM.h5')
 
-closing_price = model.predict(x_valid)
-scaler.fit_transform(pd.DataFrame(valid['Close'].values))
-# 反归一化
-closing_price = scaler.inverse_transform(closing_price)
-y_valid = scaler.inverse_transform([y_valid])
-# print(y_valid)
-# print(closing_price)
-rms = np.sqrt(np.mean(np.power((y_valid - closing_price), 2)))
-print(rms)
-print(closing_price.shape)
-print(y_valid.shape)
 
-plt.figure(figsize=(16, 8))
-dict_data = {
-    'Predictions': closing_price.reshape(1, -1)[0],
-    'Close': y_valid[0]
-}
-data_pd = pd.DataFrame(dict_data)
+def test():
+    global y_valid
+    model = tf.keras.models.load_model('./snowball/model_LSTM.h5')
+    closing_price = model.predict(x_valid)
+    # scaler.fit_transform(pd.DataFrame(valid['Close'].values))
+    scaler.fit_transform(pd.DataFrame(valid['收盘价'].values))
+    # 反归一化
+    closing_price = scaler.inverse_transform(closing_price)
+    y_valid = scaler.inverse_transform([y_valid])
+    # print(y_valid)
+    # print(closing_price)
+    rms = np.sqrt(np.mean(np.power((y_valid - closing_price), 2)))
+    print(rms)
+    print(closing_price.shape)
+    print(y_valid.shape)
 
-plt.plot(data_pd[['Close', 'Predictions']])
-plt.show()
+    plt.figure(figsize=(16, 8))
+    dict_data = {
+        'Predictions': closing_price.reshape(1, -1)[0],
+        'Close': y_valid[0]
+    }
+    data_pd = pd.DataFrame(dict_data)
+
+    plt.plot(data_pd[['Close', 'Predictions']])
+    plt.show()
+
+
+if __name__ == '__main__':
+    # train()
+    test()
