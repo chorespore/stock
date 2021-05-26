@@ -9,27 +9,26 @@ from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.layers import Dense, Dropout, LSTM
 
 
+# 时间点长度
+time_span = 10
 start = date(2000, 10, 12)
 end = date.today()
-# google_stock = pd.DataFrame(quandl.get("WIKI/GOOGL", start_date=start, end_date=end))
 tmp_lst = []
-with open('./allstock/000001.SZ.csv', 'r', encoding='utf-8') as f:
+with open('./snowball/SZ000001.csv', 'r', encoding='utf-8') as f:
     reader = csv.reader(f)
     for row in reader:
         tmp_lst.append(row)
-google_stock = pd.DataFrame(tmp_lst[1:], columns=tmp_lst[0])
-print(google_stock.shape)
-google_stock.tail()
-google_stock.head()
+stock_quotes = pd.DataFrame(tmp_lst[1:], columns=tmp_lst[0])
+print(stock_quotes.shape)
+stock_quotes.tail()
+stock_quotes.head()
 
-# 时间点长度
-time_stamp = 50
 
 # 划分训练集与验证集
 # google_stock = google_stock[['Open', 'High', 'Low', 'Close', 'Volume']]
-google_stock = google_stock[['开盘价', '最高价', '最低价', '收盘价', '成交额(千元)']]
-train = google_stock[0:2800 + time_stamp]
-valid = google_stock[2800 - time_stamp:]
+stock_quotes = stock_quotes[['open', 'high', 'low', 'close', 'dollor_volume']]
+train = stock_quotes[0:2800 + time_span]
+valid = stock_quotes[2800 - time_span:]
 
 # 归一化
 scaler = MinMaxScaler(feature_range=(0, 1))
@@ -38,8 +37,8 @@ x_train, y_train = [], []
 
 
 # 训练集
-for i in range(time_stamp, len(train)):
-    x_train.append(scaled_data[i - time_stamp:i])
+for i in range(time_span, len(train)):
+    x_train.append(scaled_data[i - time_span:i])
     y_train.append(scaled_data[i, 3])
 
 x_train, y_train = np.array(x_train), np.array(y_train)
@@ -47,11 +46,26 @@ x_train, y_train = np.array(x_train), np.array(y_train)
 # 验证集
 scaled_data = scaler.fit_transform(valid)
 x_valid, y_valid = [], []
-for i in range(time_stamp, len(valid)):
-    x_valid.append(scaled_data[i - time_stamp:i])
+for i in range(time_span, len(valid)):
+    x_valid.append(scaled_data[i - time_span:i])
     y_valid.append(scaled_data[i, 3])
 
 x_valid, y_valid = np.array(x_valid), np.array(y_valid)
+
+
+def convert():
+    tmp_lst = []
+    with open('./snowball/000001.SZ.csv', 'r', encoding='utf-8') as f:
+        reader = csv.reader(f)
+        for row in reader:
+            tmp_lst.append(row)
+    stock_quotes = pd.DataFrame(tmp_lst[1:], columns=tmp_lst[0])
+    for i, row in stock_quotes.iterrows():
+        row['open'] = (float(row['open']) - float(row['pre_close'])) / float(row['pre_close']) * 100 + 10.1
+        row['high'] = (float(row['high']) - float(row['pre_close'])) / float(row['pre_close']) * 100 + 10.1
+        row['low'] = (float(row['low']) - float(row['pre_close'])) / float(row['pre_close']) * 100 + 10.1
+        row['close'] = (float(row['close']) - float(row['pre_close'])) / float(row['pre_close']) * 100 + 10.1
+    stock_quotes.to_csv('./snowball/SZ000001.csv', index=False)
 
 
 def train():
@@ -62,6 +76,7 @@ def train():
     # input_dim： 输入单个样本特征值的维度
     # input_length： 输入的时间点长度
     model = tf.keras.Sequential()
+    print('input_dim:', x_train.shape[-1], 'input_length:', x_train.shape[1])
     model.add(LSTM(units=100, return_sequences=True, input_dim=x_train.shape[-1], input_length=x_train.shape[1]))
     model.add(LSTM(units=50))
     model.add(Dense(1))
@@ -75,7 +90,7 @@ def test():
     model = tf.keras.models.load_model('./snowball/model_LSTM.h5')
     closing_price = model.predict(x_valid)
     # scaler.fit_transform(pd.DataFrame(valid['Close'].values))
-    scaler.fit_transform(pd.DataFrame(valid['收盘价'].values))
+    scaler.fit_transform(pd.DataFrame(valid['close'].values))
     # 反归一化
     closing_price = scaler.inverse_transform(closing_price)
     y_valid = scaler.inverse_transform([y_valid])
@@ -91,6 +106,7 @@ def test():
         'Predictions': closing_price.reshape(1, -1)[0],
         'Close': y_valid[0]
     }
+    print(dict_data)
     data_pd = pd.DataFrame(dict_data)
 
     plt.plot(data_pd[['Close', 'Predictions']])
@@ -98,5 +114,6 @@ def test():
 
 
 if __name__ == '__main__':
-    # train()
+    train()
     test()
+    print('ok')
