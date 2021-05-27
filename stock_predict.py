@@ -26,15 +26,15 @@ stock_quotes.head()
 
 # 划分训练集与验证集
 # google_stock = google_stock[['Open', 'High', 'Low', 'Close', 'Volume']]
-stock_quotes = stock_quotes[['open', 'high', 'low', 'close', 'dollor_volume']]
-train = stock_quotes[0:3200 + time_span]
-valid = stock_quotes[3200 - time_span:]
+stock_quotes = stock_quotes[['open', 'high', 'low', 'close', 'dollar_volume']]
+train = stock_quotes[0:5000 + time_span]
+valid = stock_quotes[5000 - time_span:]
 
 # 归一化
 scaler = MinMaxScaler(feature_range=(0, 1))
 scaled_data = scaler.fit_transform(train)
 x_train, y_train = [], []
-
+``
 
 # 训练集
 for i in range(time_span, len(train)):
