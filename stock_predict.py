@@ -10,7 +10,7 @@ from tensorflow.keras.layers import Dense, Dropout, LSTM
 
 
 # 时间点长度
-time_span = 10
+time_span = 7
 start = date(2000, 10, 12)
 end = date.today()
 tmp_lst = []
@@ -27,8 +27,8 @@ stock_quotes.head()
 # 划分训练集与验证集
 # google_stock = google_stock[['Open', 'High', 'Low', 'Close', 'Volume']]
 stock_quotes = stock_quotes[['open', 'high', 'low', 'close', 'dollor_volume']]
-train = stock_quotes[0:2800 + time_span]
-valid = stock_quotes[2800 - time_span:]
+train = stock_quotes[0:3200 + time_span]
+valid = stock_quotes[3200 - time_span:]
 
 # 归一化
 scaler = MinMaxScaler(feature_range=(0, 1))
@@ -39,7 +39,8 @@ x_train, y_train = [], []
 # 训练集
 for i in range(time_span, len(train)):
     x_train.append(scaled_data[i - time_span:i])
-    y_train.append(scaled_data[i, 3])
+    res = 0 if scaled_data[i, 3] <= 0.5 else 1
+    y_train.append(res)
 
 x_train, y_train = np.array(x_train), np.array(y_train)
 
@@ -48,7 +49,8 @@ scaled_data = scaler.fit_transform(valid)
 x_valid, y_valid = [], []
 for i in range(time_span, len(valid)):
     x_valid.append(scaled_data[i - time_span:i])
-    y_valid.append(scaled_data[i, 3])
+    res = 0 if scaled_data[i, 3] <= 0.5 else 1
+    y_valid.append(res)
 
 x_valid, y_valid = np.array(x_valid), np.array(y_valid)
 
@@ -85,6 +87,30 @@ def train():
     model.save('./snowball/model_LSTM.h5')
 
 
+def train_sigmoid():
+    # 超参数
+    epochs = 2000
+    batch_size = 64
+    # LSTM 参数: return_sequences=True LSTM输出为一个序列。默认为False，输出一个值。
+    # input_dim： 输入单个样本特征值的维度
+    # input_length： 输入的时间点长度
+    model = tf.keras.Sequential()
+    print('input_dim:', x_train.shape[-1], 'input_length:', x_train.shape[1])
+    model.add(LSTM(units=100, activation='relu', return_sequences=True, input_dim=x_train.shape[-1], input_length=x_train.shape[1]))
+    model.add(Dropout(0.4))
+    model.add(LSTM(units=50, activation='relu'))
+    model.add(Dropout(0.4))
+    model.add(Dense(1, activation='sigmoid'))
+
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+    hist = model.fit(x_train, y_train, epochs=epochs, batch_size=batch_size, verbose=1)
+    model.save('./snowball/model_LSTM.h5')
+    plt.plot(hist.history['loss'], label='loss')
+    plt.plot(hist.history['accuracy'], label='acc')
+    plt.legend()
+    plt.show()
+
+
 def test():
     global y_valid
     model = tf.keras.models.load_model('./snowball/model_LSTM.h5')
@@ -114,6 +140,7 @@ def test():
 
 
 if __name__ == '__main__':
-    train()
-    test()
+    # convert()
+    train_sigmoid()
+    # test()
     print('ok')
