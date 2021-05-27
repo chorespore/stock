@@ -34,7 +34,6 @@ valid = stock_quotes[5000 - time_span:]
 scaler = MinMaxScaler(feature_range=(0, 1))
 scaled_data = scaler.fit_transform(train)
 x_train, y_train = [], []
-``
 
 # 训练集
 for i in range(time_span, len(train)):
