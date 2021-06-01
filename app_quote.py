@@ -1,5 +1,6 @@
 import dao
 import json
+import tools
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 from bson import json_util
@@ -11,6 +12,12 @@ cors = CORS(app)
 @app.route('/')
 def hello_world():
     return 'Hello Flask'
+
+
+@app.route('/rank')
+def rank():
+    data = tools.loadJson('./snowball/rank.json')
+    return json_util.dumps(data)
 
 
 @app.route('/quote/<symbol>', methods=['GET'])

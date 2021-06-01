@@ -30,8 +30,6 @@
         <div id="container" style="height: 100%"></div>
     </div>
 
-
-
     <script type="text/javascript">
         var dom = document.getElementById("container");
         var myChart = echarts.init(dom);
@@ -82,7 +80,6 @@
         }
 
         function draw() {
-
             var dates = rawData.map(function (item) {
                 return item['date'];
             });
@@ -235,19 +232,6 @@
                 keywordTimer: null,
                 keyword: "",
                 stocks: [],
-                buttonStyles: {
-                    backgroundColor: "#008CBA",
-                    border: "none",
-                    color: "white",
-                    borderRadius: "4px",
-                    textAlign: "center",
-                    textDecoration: "none",
-                    display: "inline-block",
-                    width: "64px",
-                    height: "64px",
-                    fontSize: "24px",
-                    margin: "1px 6px"
-                }
             },
             mounted() {
                 axios
